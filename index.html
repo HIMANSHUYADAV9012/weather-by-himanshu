@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hawabaazi😅 ☁️ | By Himanshu Yadav</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.6s ease-in-out;
+      }
+
+      #suggestions {
+        position: absolute;
+        z-index: 50;
+        background: white;
+        width: 100%;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        overflow: auto;
+        max-height: 200px;
+      }
+      #suggestions div {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+      }
+      #suggestions div:hover {
+        background-color: #e2e8f0;
+      }
+
+      .himanshu-bubble {
+        position: relative;
+        background: #f8fafc;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-top: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .himanshu-bubble:after {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        border-width: 0 10px 10px;
+        border-style: solid;
+        border-color: #f8fafc transparent;
+      }
+
+      /* Music player styles */
+      #musicPlayer {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        padding: 8px 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+      #musicPlayer:hover {
+        background: rgba(255, 255, 255, 0.95);
+      }
+      #musicControl {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #3b82f6;
+        transition: transform 0.2s;
+      }
+      #musicControl:hover {
+        transform: scale(1.1);
+      }
+      #musicInfo {
+        font-size: 0.8rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 0;
+        transition: max-width 0.3s ease;
+      }
+      #musicPlayer:hover #musicInfo {
+        max-width: 200px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 min-h-screen flex flex-col items-center px-4 py-10 transition-all duration-500 font-sans"
+  >
+    <div class="text-center w-full max-w-lg">
+      <h1
+        class="text-5xl font-extrabold mb-6 text-blue-900 drop-shadow-md tracking-wide"
+      >
+        ⛅HawaBaazi
+      </h1>
+
+      <!-- Input + Suggestions -->
+      <div class="relative w-full md:w-96 mx-auto mb-6 group">
+        <div
+          class="relative bg-white/30 backdrop-blur-lg border border-white/50 rounded-xl shadow-xl transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-400"
+        >
+          <input
+            id="locationInput"
+            type="text"
+            oninput="autoSuggest(this.value)"
+            placeholder="🌆 Apna sheher daalo yaar..."
+            class="peer px-5 py-3 w-full bg-transparent rounded-xl focus:outline-none text-lg text-gray-800 placeholder-gray-700 font-medium transition-all duration-300 tracking-wide"
+          />
+          <!-- Voice Search Button -->
+          <button
+            onclick="startVoice()"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-800 text-xl transition-transform hover:scale-110"
+            title="Voice Search"
+          >
+            <i class="fas fa-microphone"></i>
+          </button>
+        </div>
+        <div id="suggestions" class="hidden mt-1 z-50"></div>
+      </div>
+
+      <!-- Animated Button -->
+      <button
+        id="checkBtn"
+        onclick="getWeather()"
+        class="mb-6 px-7 py-3 rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 text-white font-bold shadow-lg shadow-blue-300/50 hover:shadow-xl hover:scale-105"
+      >
+        <i class="fas fa-cloud-sun mr-2 animate-pulse"></i> Pata Karo Mausam Ka!
+      </button>
+
+      <!-- Search History -->
+      <div id="history" class="flex flex-wrap gap-2 justify-center mb-6"></div>
+
+      <!-- Weather Info -->
+      <div id="weatherInfo" class="w-full"></div>
+    </div>
+
+    <!-- Music Player (initially hidden) -->
+    <div id="musicPlayer" style="display: none">
+      <button id="musicControl" onclick="toggleMusic()">
+        <i class="fas fa-play"></i>
+      </button>
+      <span id="musicInfo">Weather Music</span>
+    </div>
+
+    <!-- Footer -->
+    <footer
+      class="mt-10 bg-white/30 backdrop-blur-md rounded-2xl p-5 shadow-xl w-full max-w-md animate-fadeIn"
+    >
+      <div class="flex flex-col items-center gap-3 text-center">
+        <h3 class="text-xl font-semibold text-gray-800">
+          Designed with ❤️ by Himanshu Yadav
+        </h3>
+
+        <div class="flex flex-wrap justify-center gap-4 mt-2">
+          <a
+            href="https://instagram.com/himanshu_yadav479"
+            target="_blank"
+            class="flex items-center gap-2 px-4 py-1.5 bg-pink-100 rounded-full hover:bg-pink-200 transition"
+          >
+            <i
+              class="fab fa-instagram text-pink-600 text-lg hover:scale-125 duration-300"
+            ></i>
+            <span class="text-sm font-medium text-gray-800">Instagram</span>
+          </a>
+          <a
+            href="https://wa.me/918534866350"
+            target="_blank"
+            class="flex items-center gap-2 px-4 py-1.5 bg-green-100 rounded-full hover:bg-green-200 transition"
+          >
+            <i
+              class="fab fa-whatsapp text-green-600 text-lg hover:scale-125 duration-300"
+            ></i>
+            <span class="text-sm font-medium text-gray-800">WhatsApp</span>
+          </a>
+        </div>
+
+        <a
+          href="tel:+918534866350"
+          class="flex items-center gap-2 px-4 py-1.5 bg-blue-100 rounded-full hover:bg-blue-200 transition"
+        >
+          <i
+            class="fas fa-phone-alt text-blue-600 text-sm hover:scale-125 duration-300"
+          ></i>
+          <span class="text-sm font-medium text-gray-800">Call Me</span>
+        </a>
+
+        <a
+          href="mailto:azp729012@gmail.com"
+          class="text-xs text-blue-700 underline hover:text-blue-900 transition"
+          >Send Feedback</a
+        >
+
+        <p class="text-sm text-gray-600 mt-2">
+          © <span id="year"></span> All Rights Reserved
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Weather activities suggestions
+    // Family-friendly & funny activity suggestions based on weather
+const weatherActivities = {
+  sunny: [
+    "☀️ Aaj ka sun toh celebrity mood mein hai – sunglasses mandatory! 😎",
+    "🍹 Mummy ke haath ka aam panna sabko serve karo, chilled vibes! ❄️",
+    "🧺 Terrace pe bedsheet bichhao, ghar wala picnic shuru karo!",
+    "💦 Baccho ke लिए inflatable mini pool setup karo – pool party at home!",
+    "🎨 Rangoli ya chalk se terrace decorate karo – insta reels ke लिए perfect!",
+    "📖 Veranda में बैठकर dadi-nani से पुरानी कहानियाँ सुनो!",
+    "🍦 Ice cream bar बनाओ ghar mein – toppings unlimited!",
+    "👒 Mummy-पापा ke साथ matching summer hats पहनो!",
+    "👣 Barefoot terrace walk – thoda earthing bhi ho जाए!",
+    "🪁 Bacchon ke साथ पतंग उड़ाओ, sunny sky mein colors भर दो!",
+    "🎶 Outdoor Bluetooth speaker लगाओ, sabka dance mood on करो!",
+    "🏖️ Sunbathing mat bichhao aur Vitamin-D party रखो!",
+    "🧼 Baccho के साथ car wash game खेलो, sabko मज़ा आएगा!",
+    "🍍 Tropical fruit salad बनाओ aur sab milke enjoy करो!",
+    "🎥 Garden में sheet लगाके mini movie screening रखो!",
+    "📷 Sunny filter में sabka photoshoot करो!",
+    "🌼 Ghar के plants को पानी दो aur unse बात करो – nature bonding!",
+    "🐶 Pet ke साथ lawn में fetch खेलो!",
+    "🍉 Watermelon cutting contest rakho – sabke हिस्से में एक slice!",
+    "🧃 Sab milke ek giant lemonade pitcher बनाओ – cheers bolo! 🥂"
+  ],
+  rainy: [
+    "☔ Window के पास बैठो aur barish ke साथ pakoda party शुरू करो!",
+    "🍵 Mummy ke haath ki masala chai sabko serve करो!",
+    "👣 Papa के साथ umbrella लेकर rainy walk करो!",
+    "😴 Rain sound playlist on करो aur power nap लो!",
+    "⛵ Kids के साथ paper boat बना के balcony में चलाओ!",
+    "🎵 ‘Tip Tip Barsa Pani’ वाला dance karo – sab milke!",
+    "🌽 Bhutta सेकने का competition रखो – sabko apna flavour चुनने दो!",
+    "🖍️ Baccho के लिए ‘Draw the Rain’ competition रखो!",
+    "📸 Rainy-day look में family reel shoot करो!",
+    "🎤 Purani romantic songs गाओ, Bollywood वाली feel ke साथ!",
+    "🎲 Indoor games like Uno, Ludo aur Jenga nikalo!",
+    "🍪 Rainy cookie baking session rakho sabke साथ!",
+    "📚 Baccho को barish wali kahani sunाओ – imagination उड़ने दो!",
+    "💃 Mini dance-off rakho – बारिश और beats दोनो साथ!",
+    "🧽 Rain ke बहाने car साफ कर लो – मज़ा भी kaam भी!",
+    "🔦 Torch leke dark corner treasure hunt करो!",
+    "🥳 Rainy snacks party करो – हर किसी की पसंद की चीज़!",
+    "🎬 Bollywood rainy movie marathon rakho – popcorn ready!",
+    "🧵 Mummy से सीना सिखो – हाथ से एक छोटी चीज़ बनाओ!",
+    "💌 Barish wali yaadon का scrap-book banao – creativity time!"
+  ],
+  cloudy: [
+    "☁️ Sky pe itne badal hain jaise God ne cotton फेंक दी हो!",
+    "🏞️ Park chalo with family – perfect weather walk के लिए!",
+    "👀 Baccho के साथ cloud shapes पहचानने का game खेलो!",
+    "🏸 Sun नहीं है toh badminton ka मज़ा double!",
+    "🍱 Ghar में chhoti si indoor picnic करो mat bichake!",
+    "📸 Cloudy photoshoot करो, insta-worthy background मिलेगा!",
+    "📚 Story time rakho – mummy/dadi की best stories!",
+    "🎲 Papa ke साथ chess या carrom खेलने का challenge रखो!",
+    "🍝 Sab milke ek fav dish बनाओ aur serve करो restaurant style!",
+    "😂 Jokes session rakho – हर कोई ek funny joke सुनाए!",
+    "🎮 Cloudy day gaming tournament – PS या mobile sab chalta hai!",
+    "🎨 Painting time – after all, mood cloudy है पर creativity bright!",
+    "🪁 Baccho के साथ paper kite बनाओ और उड़ाओ!",
+    "☕ Cloud watching ke साथ chai and samosa combo ready रखो!",
+    "🎭 Mini family drama act करो – stage cloudy vibe wala!",
+    "🔭 Telescope या binoculars से sky observe करो!",
+    "🎤 Antakshari करो – theme ‘sky & clouds’ songs!",
+    "🛋️ Sofa pe sab ek साथ बैठकर family फनी memory शेयर करो!",
+    "🧃 Cloudy cooler बनाओ – mint lemonade, rose sharbat!",
+    "💌 Cloud mood पर एक family letter likho future के लिए!"
+  ],
+  cold: [
+    "🔥 Ghar ka हीटर ya angeethi के पास family jam session rakho!",
+    "🍮 Garam halwa ya gajar ka halwa sab milke banao aur खाओ!",
+    "🛏️ Blanket fort बनाओ aur अंदर movie night रखो!",
+    "🧤 Baccho ke लिए woolen dress-up contest rakho!",
+    "🧦 Mummy से unki cozy socks माँगो aur पहनो with chai!",
+    "📖 Fireplace vibes में story reading रखो – papa बोले aur sab सुनें!",
+    "🍜 Soup ke अलग-अलग flavour try karo – tasting challenge rakho!",
+    "🎧 Chill music lagao aur sab milके peaceful time लो!",
+    "🧩 Puzzle solving session rakho with hot cocoa!",
+    "🎨 Wool craft workshop ghar में ही रख लो!",
+    "🧋 Kulhad wali chai sab मिलके market से लाओ aur enjoy करो!",
+    "📸 Winter outfits में family की funny reel बनाओ!",
+    "🍕 Oven-based pizza banाओ – home-made cheesy delight!",
+    "🎤 Karaoke session rakho – winter blues दूर भागे!",
+    "📚 Baccho को bedtime pe moral story सुनाओ with extra cozy vibes!",
+    "🧤 Gloves पहन कर snow drawing game खेलो (chalk से)!",
+    "👨‍🍳 Sab milke ek winter special thali बनाओ!",
+    "🎁 DIY wool gift banाओ – grandma को दो surprise!",
+    "🛏️ Bed heater के पास ek warm word chain game खेलो!",
+    "🧣 Mummy की पुरानी shawl पहन के retro style photos लो!"
+  ],
+  default: [
+    "🌈 Mausam चाहे जो हो – masti toh har haal में होगी!",
+    "🕺💃 Family dance-off rakho – कोई भी mood हो, beat toh banta hai!",
+    "🎭 Ghar में mini talent show रखो – sab kuch perform करें!",
+    "🤳 Crazy creative family selfies लो – background chahe kuch bhi हो!",
+    "🗺️ Baccho के लिए treasure hunt setup karo – clues बना लो!",
+    "🎪 Mini mela setup करो घर में – popcorn, stalls और games!",
+    "🖌️ Ek wall पर sabki doodle art gallery बनाओ!",
+    "😂 Mummy की saree से fashion ramp walk करो – sab हँसेंगे!",
+    "📝 Joke wall board बनाओ – sab ek joke likें daily!",
+    "🎬 Ek short film बनाओ – phone से ही direction aur acting करो!",
+    "🎮 Tech-free game hour रखो – सिर्फ classic games allowed!",
+    "🧃 Sab milke ek unique drink recipe बनाओ और taste test करो!",
+    "📚 Family ke favorite books ka shelf बनाओ aur review share करो!",
+    "🎼 Ek group song गाओ और वीडियो बना लो!",
+    "🖼️ Purani family photos निकल के nostalgia night रखो!",
+    "🌍 Ek chhota ‘World Tour at Home’ करो – हर country की theme setup करो!",
+    "🥳 Daily ek chhoti celebration करो – bina wajah khushi!",
+    "🪄 Baccho ke साथ magic tricks सीखो aur perform करो!",
+    "🎲 Family Olympics रखो – हर कोई ek game लाए!",
+    "❤️ Ghar ka gratitude jar बनाओ – sab roz ek चीज़ likें जिसमें खुशी हो!"
+  ]
+};
+
+      // Audio context for handling autoplay restrictions
+      let audioContext;
+      let audioElement;
+      let isMusicPlaying = false;
+      let currentTrack = "";
+      let audioInitialized = false;
+
+      document.getElementById("year").textContent = new Date().getFullYear();
+      let searchHistory =
+        JSON.parse(localStorage.getItem("weatherHistory")) || [];
+
+      function getRandomActivity(condition) {
+        let activities;
+
+        if (condition.includes("sun") || condition.includes("clear")) {
+          activities = weatherActivities.sunny;
+        } else if (
+          condition.includes("rain") ||
+          condition.includes("drizzle")
+        ) {
+          activities = weatherActivities.rainy;
+        } else if (condition.includes("cloud")) {
+          activities = weatherActivities.cloudy;
+        } else if (condition.includes("cold") || condition.includes("snow")) {
+          activities = weatherActivities.cold;
+        } else {
+          activities = weatherActivities.default;
+        }
+
+        return activities[Math.floor(Math.random() * activities.length)];
+      }
+
+      // Initialize audio system
+      function initAudio() {
+        if (audioInitialized) return;
+
+        // Create audio element
+        audioElement = new Audio();
+        audioElement.loop = true;
+
+        // Setup audio context
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaElementSource(audioElement);
+        source.connect(audioContext.destination);
+
+        // Resume audio context when user interacts (to handle autoplay policies)
+        document.addEventListener(
+          "click",
+          () => {
+            if (audioContext.state === "suspended") {
+              audioContext.resume();
+            }
+          },
+          { once: true }
+        );
+
+        audioInitialized = true;
+      }
+
+      // Play weather-appropriate music
+      function playWeatherMusic(condition) {
+        if (!audioInitialized) initAudio();
+
+        let musicFile;
+        let musicName;
+
+        if (condition.includes("sun") || condition.includes("clear")) {
+          musicFile = "sounds/sunny.mp3";
+          musicName = "☀️ Sunny Day Music";
+        } else if (
+          condition.includes("rain") ||
+          condition.includes("drizzle")
+        ) {
+          musicFile = "sounds/rain.mp3";
+          musicName = "🌧️ Rainy Day Music";
+        } else if (condition.includes("cloud")) {
+          musicFile = "sounds/cloudy.mp3";
+          musicName = "☁️ Cloudy Day Music";
+        } else if (condition.includes("cold") || condition.includes("snow")) {
+          musicFile = "sounds/cold.mp3";
+          musicName = "❄️ Cold Day Music";
+        } else {
+          musicFile = "sounds/default.mp3";
+          musicName = "🌈 Weather Music";
+        }
+
+        // Only change if it's a new track
+        if (currentTrack !== musicFile) {
+          currentTrack = musicFile;
+          audioElement.src = musicFile;
+          document.getElementById("musicInfo").textContent = musicName;
+
+          // Try to play (might fail due to autoplay policies)
+          audioElement
+            .play()
+            .then(() => {
+              isMusicPlaying = true;
+              document.getElementById("musicControl").innerHTML =
+                '<i class="fas fa-pause"></i>';
+              document.getElementById("musicPlayer").style.display = "flex";
+            })
+            .catch((error) => {
+              console.log(
+                "Autoplay prevented, will play after user interaction"
+              );
+              isMusicPlaying = false;
+              document.getElementById("musicControl").innerHTML =
+                '<i class="fas fa-play"></i>';
+              document.getElementById("musicPlayer").style.display = "flex";
+            });
+        } else if (isMusicPlaying) {
+          // If same track and already playing, ensure controls are visible
+          document.getElementById("musicPlayer").style.display = "flex";
+        }
+      }
+
+      // Toggle music play/pause
+      function toggleMusic() {
+        if (!audioInitialized) initAudio();
+
+        if (isMusicPlaying) {
+          audioElement.pause();
+          document.getElementById("musicControl").innerHTML =
+            '<i class="fas fa-play"></i>';
+        } else {
+          audioElement
+            .play()
+            .then(() => {
+              document.getElementById("musicControl").innerHTML =
+                '<i class="fas fa-pause"></i>';
+            })
+            .catch((error) => {
+              alert(
+                "Please interact with the page first to allow audio playback"
+              );
+            });
+        }
+        isMusicPlaying = !isMusicPlaying;
+      }
+
+      async function getWeather(location = null) {
+        const btn = document.getElementById("checkBtn");
+        const input = document.getElementById("locationInput");
+
+        if (!location) location = input.value.trim();
+        if (!location) {
+          alert("Yaar kuch toh likho! Sheher ka naam batao na 😊");
+          return;
+        }
+
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML =
+            '<i class="fas fa-spinner fa-spin mr-2"></i> Dhundh raha hoon...';
+        }
+
+        if (location && !searchHistory.includes(location)) {
+          searchHistory.unshift(location);
+          if (searchHistory.length > 5) searchHistory.pop();
+          localStorage.setItem("weatherHistory", JSON.stringify(searchHistory));
+          updateHistory();
+        }
+
+        try {
+          const res = await fetch(
+            `https://api.weatherapi.com/v1/forecast.json?key=e9c43fcf2e9c4868a3b71728252106&q=${location}&days=1&aqi=yes`
+          );
+          if (!res.ok) throw new Error("API error");
+          const data = await res.json();
+
+          const condition = data.current.condition.text.toLowerCase();
+          const emojiMap = {
+            sunny: "☀️",
+            clear: "☀️",
+            "partly cloudy": "⛅",
+            cloudy: "☁️",
+            overcast: "🌥️",
+            mist: "🌫️",
+            "patchy rain nearby": "🌦️",
+            "light rain": "🌧️",
+            "moderate rain": "🌧️",
+            "heavy rain": "⛈️",
+            thunderstorm: "🌩️",
+            snow: "❄️",
+            fog: "🌁",
+            drizzle: "🌧️",
+          };
+
+          const emoji = emojiMap[condition] || "🌈";
+          const background = getThemeFromCondition(condition);
+          document.body.className =
+            background +
+            " min-h-screen flex flex-col items-center px-4 py-6 transition-all duration-500";
+
+          const activity = getRandomActivity(condition);
+
+          document.getElementById("weatherInfo").innerHTML = `
+          <div class="bg-white/30 backdrop-blur-md rounded-2xl p-6 shadow-xl mt-6 w-full max-w-md animate-fadeIn text-gray-900">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-2xl font-bold">🏙️ ${data.location.name}, ${
+            data.location.region
+          }</h2>
+                <p class="text-sm text-gray-700">🌏 ${
+                  data.location.country
+                } | 🕰️ ${data.location.localtime}</p>
+              </div>
+              <img src="${
+                data.current.condition.icon
+              }" alt="weather icon" class="w-16 h-16">
+            </div>
+            
+            <div class="mt-4">
+              <p class="text-xl font-semibold">${emoji} ${
+            data.current.temp_c
+          }°C - ${data.current.condition.text}</p>
+              <p class="text-sm text-gray-800 mt-2">💨 Hawa: ${
+                data.current.wind_kph
+              } kph (${data.current.wind_dir})</p>
+              <p class="text-sm text-gray-800">💧 Nami: ${
+                data.current.humidity
+              }% | 😅 Mehsoos: ${data.current.feelslike_c}°C</p>
+              <p class="text-sm text-gray-800">☀️ UV: ${
+                data.current.uv
+              } | 🏭 AQI: ${
+            data.current.air_quality?.pm2_5?.toFixed(1) || "NA"
+          }</p>
+            </div>
+            
+            <div class="himanshu-bubble animate-fadeIn">
+              <p class="font-bold text-blue-800">Himanshu Says 🗣️ :</p>
+              <p class="text-gray-800">"${activity}"</p>
+            </div>
+            
+            <canvas id="forecastChart" class="mt-4" height="120"></canvas>
+            
+            <div class="mt-4 text-sm text-gray-600">
+              <p>📊 Pressure: ${data.current.pressure_mb} mb</p>
+              <p>👀 Visibility: ${data.current.vis_km} km | ☁️ Badal: ${
+            data.current.cloud
+          }%</p>
+            </div>
+          </div>
+        `;
+
+          // Play weather-appropriate music
+          playWeatherMusic(condition);
+
+          // Hourly forecast chart
+          const labels = data.forecast.forecastday[0].hour.map(
+            (h) => h.time.split(" ")[1]
+          );
+          const temps = data.forecast.forecastday[0].hour.map((h) => h.temp_c);
+          const ctx = document.getElementById("forecastChart").getContext("2d");
+          new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: "Har ghante ka temperature (°C)",
+                  data: temps,
+                  borderColor: "#2563eb",
+                  backgroundColor: "#93c5fd",
+                  tension: 0.4,
+                  fill: true,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: false },
+              },
+            },
+          });
+        } catch (err) {
+          document.getElementById("weatherInfo").innerHTML = `
+          <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mt-6 rounded animate-fadeIn" role="alert">
+            <p class="font-bold">Oops! Kuch toh gadbad hai</p>
+            <p>Yaar location sahi se likho na, nahi mil raha. Koi aur jagah try karo!</p>
+          </div>
+        `;
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML =
+              '<i class="fas fa-cloud-sun mr-2"></i> Pata Karo Mausam Ka!';
+          }
+        }
+      }
+
+      function getThemeFromCondition(condition) {
+        if (condition.includes("rain"))
+          return "bg-gradient-to-br from-blue-800 via-blue-600 to-blue-400";
+        if (condition.includes("sun") || condition.includes("clear"))
+          return "bg-gradient-to-br from-yellow-200 via-yellow-300 to-yellow-400";
+        if (condition.includes("cloud"))
+          return "bg-gradient-to-br from-gray-300 via-gray-400 to-gray-500";
+        if (condition.includes("snow"))
+          return "bg-gradient-to-br from-blue-100 via-white to-blue-200";
+        if (condition.includes("cold"))
+          return "bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400";
+        return "bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300";
+      }
+
+      function updateHistory() {
+        const container = document.getElementById("history");
+        container.innerHTML = searchHistory
+          .map(
+            (loc) =>
+              `<button onclick="getWeather('${loc}')" class="px-3 py-1 bg-white/40 text-sm rounded-full shadow hover:bg-white/60 transition">${loc}</button>`
+          )
+          .join(" ");
+      }
+
+      async function autoSuggest(query) {
+        const suggestionsBox = document.getElementById("suggestions");
+        if (!query || query.length < 2) {
+          suggestionsBox.classList.add("hidden");
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            `https://api.weatherapi.com/v1/search.json?key=e9c43fcf2e9c4868a3b71728252106&q=${query}`
+          );
+          if (!res.ok) throw new Error("API error");
+          const data = await res.json();
+
+          if (data.length === 0) {
+            suggestionsBox.classList.add("hidden");
+            return;
+          }
+
+          suggestionsBox.innerHTML = data
+            .map(
+              (loc) =>
+                `<div onclick="selectCity('${loc.name}, ${loc.region}')">${loc.name}, ${loc.region} (${loc.country})</div>`
+            )
+            .join("");
+          suggestionsBox.classList.remove("hidden");
+        } catch (err) {
+          suggestionsBox.classList.add("hidden");
+        }
+      }
+
+      function selectCity(city) {
+        document.getElementById("locationInput").value = city.split(",")[0];
+        document.getElementById("suggestions").classList.add("hidden");
+        getWeather(city);
+      }
+
+      document.addEventListener("click", (e) => {
+        if (
+          !document.getElementById("locationInput").contains(e.target) &&
+          !document.getElementById("suggestions").contains(e.target)
+        ) {
+          document.getElementById("suggestions").classList.add("hidden");
+        }
+      });
+
+      window.onload = () => {
+        updateHistory();
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const lat = pos.coords.latitude;
+              const lon = pos.coords.longitude;
+              await getWeather(`${lat},${lon}`);
+            },
+            () => {
+              // Default to Delhi if location access denied
+              getWeather("jaithra");
+            }
+          );
+        } else {
+          getWeather("jaithra");
+        }
+      };
+
+      function startVoice() {
+        const recognition = new (window.SpeechRecognition ||
+          window.webkitSpeechRecognition)();
+        recognition.lang = "en-IN";
+        recognition.start();
+        recognition.onresult = (event) => {
+          document.getElementById("locationInput").value =
+            event.results[0][0].transcript;
+          getWeather();
+        };
+      }
+    </script>
+  </body>
+</html>
