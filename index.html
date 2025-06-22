@@ -53,10 +53,7 @@
     }
   }
   </script>
-</head>
-
-
-  <style>
+ <style>
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -183,95 +180,114 @@
         .theme-default {
           background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
         }
-    
-        /* Enhanced Heavy Rain Effect */
-        .drop {
-          position: absolute;
-          background: linear-gradient(to bottom, 
-                      rgba(200, 220, 255, 0.1) 0%, 
-                      rgba(200, 220, 255, 0.8) 60%, 
-                      rgba(200, 220, 255, 0.3) 100%);
-          border-radius: 50% 50% 50% 50%/60% 60% 40% 40%;
-          animation: falling linear infinite;
-          transform-origin: 50% 100%;
-          pointer-events: none;
-          z-index: 10;
-        }
-    
-        .drop:before {
-          content: '';
-          position: absolute;
-          width: 150%;
-          height: 20%;
-          background: rgba(255, 255, 255, 0.6);
-          border-radius: 50%;
-          top: 5%;
-          left: -25%;
-          transform: scaleY(0.3);
-        }
-    
-        @keyframes falling {
-          0% {
-            transform: translateY(-100px) translateX(0) rotate(10deg);
-            opacity: 0;
-          }
-          5% {
-            opacity: 0.8;
-          }
-          50% {
-            opacity: 0.9;
-          }
-          80% {
-            opacity: 0.6;
-          }
-          100% {
-            transform: translateY(100vh) translateX(var(--wind-effect)) rotate(10deg);
-            opacity: 0;
-          }
-        }
-    
-        /* Splash effect for heavy rain */
-        .drop:after {
-          content: '';
-          position: absolute;
-          width: 300%;
-          height: 30%;
-          background: radial-gradient(ellipse at center, 
-                     rgba(255, 255, 255, 0.4) 0%, 
-                     rgba(255, 255, 255, 0) 70%);
-          top: 95%;
-          left: -100%;
-          transform: scale(0);
-          animation: splash 0.8s ease-out infinite;
-          animation-delay: inherit;
-          opacity: 0;
-        }
-    
-        @keyframes splash {
-          0% {
-            transform: scale(0.1);
-            opacity: 0;
-          }
-          50% {
-            opacity: 0.5;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 0;
-          }
-        }
-    
-        /* For very heavy rain, add secondary drops */
-        .drop.heavy {
-          width: 4px !important;
-          height: 30px !important;
-          animation-duration: 0.4s !important;
-        }
-    
-        .drop.heavy:after {
-          width: 400%;
-          height: 40%;
-        }
+   /* Weather Effects */
+.weather-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.rain {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.drop {
+  position: absolute;
+  width: 2px;
+  height: 15px;
+  background: linear-gradient(transparent, rgba(173, 216, 230, 0.8));
+  border-radius: 0 0 5px 5px;
+  animation: falling linear infinite;
+  transform-origin: top;
+}
+
+@keyframes falling {
+  0% {
+    transform: translateY(-20px) rotate(10deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(100vh) rotate(10deg);
+    opacity: 0;
+  }
+}
+
+/* Splash effect when rain hits bottom */
+.drop::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: -1px;
+  width: 4px;
+  height: 2px;
+  background: rgba(173, 216, 230, 0.3);
+  border-radius: 50%;
+  opacity: 0;
+  animation: splash 0.5s ease-out infinite;
+  animation-delay: inherit;
+}
+
+@keyframes splash {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.snow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.flake {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  filter: blur(1px);
+  animation: snow-fall linear infinite;
+}
+
+@keyframes snow-fall {
+  0% {
+    transform: translateY(-10px) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100px) translateX(20px);
+    opacity: 0;
+  }
+}
     </style>
 </head>
 
@@ -589,62 +605,58 @@
     document.getElementById("year").textContent = new Date().getFullYear();
     let searchHistory = JSON.parse(localStorage.getItem("weatherHistory")) || [];
 
-    // Create heavy rain drops with realistic physics
-    function createRainDrops(container, intensity = 90) {
-      container.innerHTML = '';
-      
-      // Adjust count based on intensity (heavy rain = more drops)
-      const dropCount = intensity > 100 ? 90 + Math.floor(intensity/2) : intensity;
-      const isHeavyRain = intensity > 100;
-      
-      for (let i = 0; i < dropCount; i++) {
-        const drop = document.createElement('div');
-        drop.className = 'drop';
-        
-        // Random size variations for realism
-        const dropSize = isHeavyRain ? 
-          (2 + Math.random() * 3) : // Bigger drops for heavy rain
-          (1 + Math.random() * 2);   // Smaller for light rain
-        
-        // Random horizontal position with some clustering
-        let leftPos;
-        if (isHeavyRain && i % 3 === 0) {
-          // Create some clustered drops for heavy rain effect
-          leftPos = 20 + (Math.random() * 90);
-        } else {
-          leftPos = Math.random() * 100;
-        }
-        
-        // Physics-based variations
-        const fallDuration = isHeavyRain ? 
-          (0.3 + Math.random() * 0.4) : // Faster for heavy rain
-          (0.7 + Math.random() * 0.6);   // Slower for light rain
-        
-        const windEffect = isHeavyRain ? 
-          (5 + Math.random() * 10) :     // More wind effect in heavy rain
-          (0 + Math.random() * 5);       // Less wind in light rain
-        
-        // Apply styles
-        drop.style.width = `${dropSize}px`;
-        drop.style.height = `${dropSize * 8}px`;
-        drop.style.left = `${leftPos}%`;
-        drop.style.animationDuration = `${fallDuration}s`;
-        drop.style.animationDelay = `${Math.random() * 0.5}s`;
-        
-        // Add wind effect through transform
-        drop.style.setProperty('--wind-effect', `${windEffect}px`);
-        
-        // Random opacity for depth effect
-        drop.style.opacity = `${0.3 + Math.random() * 0.7}`;
-        
-        // Add occasional bright drops
-        if (Math.random() > 0.9) {
-          drop.style.filter = 'brightness(1.5)';
-        }
-        
-        container.appendChild(drop);
-      }
+    // Create more realistic rain drops
+function createRainDrops(container, count = 150) {
+  container.innerHTML = '';
+  
+  for (let i = 0; i < count; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'drop';
+    
+    // Randomize drop properties
+    const dropHeight = 10 + Math.random() * 10;
+    const dropWidth = 1 + Math.random() * 1.5;
+    const dropOpacity = 0.6 + Math.random() * 0.4;
+    
+    drop.style.height = `${dropHeight}px`;
+    drop.style.width = `${dropWidth}px`;
+    drop.style.left = `${Math.random() * 100}%`;
+    drop.style.animationDuration = `${0.4 + Math.random() * 0.6}s`;
+    drop.style.animationDelay = `${Math.random() * 0.5}s`;
+    drop.style.opacity = dropOpacity;
+    
+    // Make drops bigger and faster for heavy rain
+    if (count > 100) {
+      drop.style.width = `${2 + Math.random() * 3}px`;
+      drop.style.height = `${15 + Math.random() * 10}px`;
+      drop.style.animationDuration = `${0.3 + Math.random() * 0.4}s`;
     }
+    
+    container.appendChild(drop);
+  }
+}
+
+// Create snow flakes
+function createSnowFlakes(container, count = 50) {
+  container.innerHTML = '';
+  
+  for (let i = 0; i < count; i++) {
+    const flake = document.createElement('div');
+    flake.className = 'flake';
+    
+    // Randomize flake properties
+    const flakeSize = 4 + Math.random() * 6;
+    flake.style.width = `${flakeSize}px`;
+    flake.style.height = `${flakeSize}px`;
+    flake.style.left = `${Math.random() * 100}%`;
+    flake.style.animationDuration = `${3 + Math.random() * 5}s`;
+    flake.style.animationDelay = `${Math.random() * 5}s`;
+    flake.style.opacity = `${0.3 + Math.random() * 0.7}`;
+    
+    container.appendChild(flake);
+  }
+}
+   
 
     async function getWeather(location = null) {
       const btn = document.getElementById("checkBtn");
@@ -714,9 +726,9 @@
           effectsContainer.appendChild(rainDiv);
           
           // Adjust number of drops based on rain intensity
-          let dropCount = 90; // light rain
-          if (condition.includes("moderate")) dropCount = 100;
-          if (condition.includes("heavy") || condition.includes("torrential")) dropCount = 150;
+          let dropCount = 150; // light rain
+          if (condition.includes("moderate")) dropCount = 200;
+          if (condition.includes("heavy") || condition.includes("torrential")) dropCount = 250;
           
           createRainDrops(rainDiv, dropCount);
         }
