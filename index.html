@@ -1,971 +1,451 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#38bdf8" />
+    <meta
+      name="description"
+      content="HawaBaazi - India's coolest weather app that suggests fun activities and music based on live weather conditions."
+    />
+    <meta
+      name="keywords"
+      content="weather app, HawaBaazi, weather forecast, fun weather app, weather activities, music by weather, Himanshu Yadav"
+    />
+    <meta name="author" content="Himanshu Yadav" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#38bdf8" />
-  <meta name="description" content="HawaBaazi - India's coolest weather app that suggests fun activities and music based on live weather conditions." />
-  <meta name="keywords" content="weather app, HawaBaazi, weather forecast, fun weather app, weather activities, music by weather, Himanshu Yadav" />
-  <meta name="author" content="Himanshu Yadav" />
+    <!-- Open Graph / Facebook -->
+    <meta
+      property="og:title"
+      content="HawaBaazi - Fun Weather App with Music & Activities!"
+    />
+    <meta
+      property="og:description"
+      content="Check the weather and get fun suggestions with music! HawaBaazi is a beautiful and interactive weather app made for India."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hawabaazi.onrender.com" />
+    <meta
+      property="og:image"
+      content="https://hawabaazi.onrender.com/static/og-preview.png"
+    />
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:title" content="HawaBaazi - Fun Weather App with Music & Activities!" />
-  <meta property="og:description" content="Check the weather and get fun suggestions with music! HawaBaazi is a beautiful and interactive weather app made for India." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://hawabaazi.onrender.com" />
-  <meta property="og:image" content="https://hawabaazi.onrender.com/static/og-preview.png" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HawaBaazi - Weather + Music + Fun" />
+    <meta
+      name="twitter:description"
+      content="Weather-based activity suggestions, fun messages, and perfect background music - all in one app!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://hawabaazi.onrender.com/static/og-preview.png"
+    />
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="HawaBaazi - Weather + Music + Fun" />
-  <meta name="twitter:description" content="Weather-based activity suggestions, fun messages, and perfect background music - all in one app!" />
-  <meta name="twitter:image" content="https://hawabaazi.onrender.com/static/og-preview.png" />
+    <!-- Favicon -->
+    <link rel="icon" href="/static/favicon.png" type="image/png" />
 
-  <!-- Favicon -->
-  <link rel="icon" href="/static/favicon.png" type="image/png" />
+    <!-- Title -->
+    <title>HawaBaazi 😅 ☁️ | Your Fun Weather Companion</title>
 
-  <!-- Title -->
-  <title>HawaBaazi 😅 ☁️ | Your Fun Weather Companion</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
 
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lottie Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
 
-  <!-- Lottie Animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "HawaBaazi",
+        "url": "https://hawabaazi.onrender.com",
+        "description": "HawaBaazi is a unique weather app that suggests activities and music based on current weather.",
+        "applicationCategory": "WeatherApp",
+        "creator": {
+          "@type": "Person",
+          "name": "Himanshu Yadav"
+        }
+      }
+    </script>
+    <style>
+      .hourly-forecast-container {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 40rem;
+        overflow: hidden;
+      }
 
-  <!-- Structured Data / Schema.org -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "HawaBaazi",
-    "url": "https://hawabaazi.onrender.com",
-    "description": "HawaBaazi is a unique weather app that suggests activities and music based on current weather.",
-    "applicationCategory": "WeatherApp",
-    "creator": {
-      "@type": "Person",
-      "name": "Himanshu Yadav"
-    }
-  }
-  </script>
- <style>
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
-        .animate-fadeIn {
-          animation: fadeIn 0.6s ease-in-out;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-    
-        @keyframes pulse {
-          0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-          }
-          50% {
-            transform: scale(1.05);
-            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-          }
-        }
-        .animate-pulse-ring {
-          animation: pulse 1.5s infinite;
-        }
-    
-        #suggestions {
-          position: absolute;
-          z-index: 50;
-          background: white;
-          width: 100%;
-          border-radius: 0.5rem;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-          overflow: auto;
-          max-height: 200px;
-        }
-        #suggestions div {
-          padding: 0.5rem 1rem;
-          cursor: pointer;
-        }
-        #suggestions div:hover {
-          background-color: #e2e8f0;
-        }
-    
-        .himanshu-bubble {
-          position: relative;
-          background: #f8fafc;
-          border-radius: 1rem;
-          padding: 1rem;
-          margin-top: 1rem;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .himanshu-bubble:after {
-          content: "";
-          position: absolute;
-          top: -10px;
-          left: 20px;
-          border-width: 0 10px 10px;
-          border-style: solid;
-          border-color: #f8fafc transparent;
-        }
-    
-        /* Music player styles */
-        #musicPlayer {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          background: rgba(255, 255, 255, 0.8);
-          backdrop-filter: blur(10px);
-          border-radius: 50px;
-          padding: 8px 15px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          z-index: 1000;
-          transition: all 0.3s ease;
-        }
-        #musicPlayer:hover {
-          background: rgba(255, 255, 255, 0.95);
-        }
-        #musicControl {
-          background: none;
-          border: none;
-          font-size: 1.2rem;
-          cursor: pointer;
-          color: #3b82f6;
-          transition: transform 0.2s;
-        }
-        #musicControl:hover {
-          transform: scale(1.1);
-        }
-        #musicInfo {
-          font-size: 0.8rem;
-          color: #333;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 0;
-          transition: max-width 0.3s ease;
-        }
-        #musicPlayer:hover #musicInfo {
-          max-width: 200px;
-        }
-    
-        /* Weather Theme Classes */
-        .theme-sunny {
-          background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        }
-        .theme-rainy {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .theme-cloudy {
-          background: linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%);
-        }
-        .theme-snowy {
-          background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
-        }
-        .theme-thunder {
-          background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-        }
-        .theme-default {
-          background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
-        }
-        .theme-night {
-          background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-        }
-        
-        /* Lottie Animation Container */
-        .lottie-animation {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 1;
-          overflow: hidden;
-        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.6s ease-in-out;
+      }
 
-        /* Weather Card Container */
-        .weather-card {
-          position: relative;
-          overflow: hidden;
-          width: 100%;
-          max-width: 28rem;
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
         }
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+        }
+      }
+      .animate-pulse-ring {
+        animation: pulse 1.5s infinite;
+      }
+
+      #suggestions {
+        position: absolute;
+        z-index: 50;
+        background: white;
+        width: 100%;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        overflow: auto;
+        max-height: 200px;
+      }
+      #suggestions div {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+      }
+      #suggestions div:hover {
+        background-color: #e2e8f0;
+      }
+
+      .himanshu-bubble {
+        position: relative;
+        background: #f8fafc;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-top: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .himanshu-bubble:after {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        border-width: 0 10px 10px;
+        border-style: solid;
+        border-color: #f8fafc transparent;
+      }
+
+      /* Music player styles */
+      #musicPlayer {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        padding: 8px 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+      #musicPlayer:hover {
+        background: rgba(255, 255, 255, 0.95);
+      }
+      #musicControl {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #3b82f6;
+        transition: transform 0.2s;
+      }
+      #musicControl:hover {
+        transform: scale(1.1);
+      }
+      #musicInfo {
+        font-size: 0.8rem;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 0;
+        transition: max-width 0.3s ease;
+      }
+      #musicPlayer:hover #musicInfo {
+        max-width: 200px;
+      }
+
+      /* Weather Theme Classes */
+      .theme-sunny {
+        background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      }
+      .theme-rainy {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .theme-cloudy {
+        background: linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%);
+      }
+      .theme-snowy {
+        background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
+      }
+      .theme-thunder {
+        background: linear-gradient(
+          135deg,
+          #0f2027 0%,
+          #203a43 50%,
+          #2c5364 100%
+        );
+      }
+      .theme-default {
+        background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+      }
+      .theme-night {
+        background: linear-gradient(
+          135deg,
+          #0f0c29 0%,
+          #302b63 50%,
+          #24243e 100%
+        );
+      }
+
+      /* Lottie Animation Container */
+      .lottie-animation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      /* Weather Card Container */
+      .weather-card {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        max-width: 28rem;
+      }
+      /* Hourly Forecast Styles */
+      .hourly-forecast-container {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .hourly-scroll-container {
+        scroll-snap-type: x mandatory;
+        gap: 0.5rem;
+      }
+
+      .hourly-item {
+        scroll-snap-align: start;
+        min-width: 60px;
+        transition: all 0.2s ease;
+      }
+
+      .hourly-item:hover {
+        transform: translateY(-3px);
+      }
+
+      /* Custom scrollbar */
+      .scrollbar-hide::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      .scrollbar-hide::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+      }
+
+      .scrollbar-hide::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+      }
+
+      .scrollbar-hide::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+      }
+      .hourly-forecast-container {
+        animation: fadeIn 0.6s ease-in-out;
+        transition: all 0.3s ease;
+      }
     </style>
-</head>
 
-<body class="theme-default min-h-screen flex flex-col items-center justify-center px-4 py-10 transition-all duration-500 font-sans">
+    <script src="js files/config.js"></script>
+    <script src="js files/utils.js"></script>
+    <script src="js files/weatherdisplay.js"></script>
+    <script src="js files/audio.js"></script>
+    <script src="js files/main.js"></script>
+  </head>
+
+  <body
+    <body
+    class="theme-default min-h-screen flex flex-col items-center justify-center px-4 py-10 bg-gradient-to-br from-blue-100 to-blue-300 transition-all duration-500 font-sans"
+  >
     <div class="w-full max-w-2xl mx-auto">
-        <div class="text-center w-full">
-            <h1 class="text-5xl font-extrabold mb-2 text-blue-900 drop-shadow-md tracking-wide">
-        ⛅HawaBaazi
-      </h1>
-            <p class="text-sm text-white-800 font-medium mb-6 opacity-90">
-                Weather App || By Himanshu Yadav
-            </p>
+      <!-- Title -->
+      <div class="text-center w-full animate-fadeInUp">
+        <h1
+          class="text-5xl font-extrabold mb-2 text-blue-900 drop-shadow-xl tracking-wide animate-pulse"
+        >
+          ⛅ HawaBaazi
+        </h1>
+        <p
+          class="text-sm text-gray-700 font-semibold mb-8 opacity-90 tracking-wide"
+        >
+          Weather App || By <span class="text-blue-800">Himanshu Yadav</span>
+        </p>
+      </div>
 
-            <!-- Input + Suggestions -->
-            <div class="relative w-full max-w-md mx-auto mb-6 group">
-                <div class="relative bg-white/30 backdrop-blur-lg border border-white/50 rounded-xl shadow-xl transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-400">
-                    <input id="locationInput" type="text" oninput="autoSuggest(this.value)" placeholder="🌆 Enter Your City Name..." class="peer px-5 py-3 w-full bg-transparent rounded-xl focus:outline-none text-lg text-gray-800 placeholder-gray-700 font-medium transition-all duration-300 tracking-wide"
-                    />
-                    <!-- Voice Search Button -->
-                    <button id="voiceBtn" onclick="startVoice()" class="absolute right-3 top-1/2 -translate-y-1/2 text-blue-600 hover:text-blue-800 text-xl transition-transform" title="Voice Search">
-                        <i class="fas fa-microphone"></i>
-                    </button>
-                </div>
-                <div id="suggestions" class="hidden mt-1 z-50"></div>
-            </div>
+      <!-- Search Box -->
+      <div
+        class="relative w-full max-w-md mx-auto mb-6 group animate-fadeInUp delay-300"
+      >
+        <div
+          class="relative bg-white/30 backdrop-blur-lg border border-white/50 rounded-2xl shadow-2xl transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-400 overflow-hidden"
+        >
+          <!-- Input Field -->
+          <input
+            id="locationInput"
+            type="text"
+            oninput="autoSuggest(this.value)"
+            placeholder="🌆 Enter your city name..."
+            class="peer px-5 py-3 w-full bg-transparent text-lg text-gray-800 placeholder-gray-700 font-medium focus:outline-none transition-all duration-300"
+          />
 
-            <!-- Animated Button -->
-            <div class="flex justify-center w-full mb-6">
-                <button id="checkBtn" onclick="getWeather()" class="px-7 py-3 rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 text-white font-bold shadow-lg shadow-blue-300/50 hover:shadow-xl hover:scale-105">
-                    <i class="fas fa-cloud-sun mr-2 animate-pulse"></i> check weather..🌡️
-                </button>
-            </div>
-
-            <!-- Search History -->
-            <div id="history" class="flex flex-wrap gap-2 justify-center mb-6 w-full"></div>
-
-            <!-- Weather Info -->
-            <div id="weatherInfo" class="w-full flex justify-center"></div>
+          <!-- Voice Button -->
+          <button
+            id="voiceBtn"
+            onclick="startVoice()"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-blue-700 hover:text-blue-900 text-xl transition-transform hover:scale-110"
+            title="Voice Search"
+          >
+            <i class="fas fa-microphone"></i>
+          </button>
         </div>
+
+        <!-- Suggestions -->
+        <div
+          id="suggestions"
+          class="hidden mt-2 z-50 text-left bg-white rounded-xl shadow-lg p-2 text-gray-800 animate-fadeIn"
+        ></div>
+      </div>
     </div>
+
+    <!-- Animated Button -->
+    <div class="flex justify-center w-full mb-6">
+      <button
+        id="checkBtn"
+        onclick="getWeather()"
+        class="px-7 py-3 rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 text-white font-bold shadow-lg shadow-blue-300/50 hover:shadow-xl hover:scale-105"
+      >
+        <i class="fas fa-cloud-sun mr-2 animate-pulse"></i> check weather..🌡️
+      </button>
+    </div>
+
+    <!-- Search History -->
+    <div
+      id="history"
+      class="flex flex-wrap gap-2 justify-center mb-6 w-full"
+    ></div>
+
+    <!-- Weather Info -->
+    <div
+      id="weatherInfo"
+      class="w-full flex flex-col items-center gap-6 px-4"
+    ></div>
 
     <!-- Music Player (initially hidden) -->
     <div id="musicPlayer" style="display: none">
-        <button id="musicControl" onclick="toggleMusic()">
-            <i class="fas fa-play"></i>
-        </button>
-        <span id="musicInfo">Weather Music</span>
+      <button id="musicControl" onclick="toggleMusic()">
+        <i class="fas fa-play"></i>
+      </button>
+      <span id="musicInfo">Weather Music</span>
     </div>
 
     <!-- Footer -->
-    <footer class="mt-10 bg-white/30 backdrop-blur-md rounded-2xl p-5 shadow-xl w-full max-w-md mx-auto animate-fadeIn">
-        <div class="flex flex-col items-center gap-3 text-center">
-            <h3 class="text-xl font-semibold text-gray-800">
-        Designed with ❤️ by Himanshu Yadav
-      </h3>
+    <footer
+      class="mt-10 bg-white/30 backdrop-blur-md rounded-2xl p-5 shadow-xl w-full max-w-md mx-auto animate-fadeIn"
+    >
+      <div class="flex flex-col items-center gap-3 text-center">
+        <h3 class="text-xl font-semibold text-gray-800">
+          Designed with ❤️ by Himanshu Yadav
+        </h3>
 
-            <div class="flex flex-wrap justify-center gap-4 mt-2">
-                <a href="https://instagram.com/himanshu_yadav479" target="_blank" class="flex items-center gap-2 px-4 py-1.5 bg-pink-100 rounded-full hover:bg-pink-200 transition">
-                    <i class="fab fa-instagram text-pink-600 text-lg hover:scale-125 duration-300"></i>
-                    <span class="text-sm font-medium text-gray-800">Instagram</span>
-                </a>
-                <a href="https://wa.me/918534866350" target="_blank" class="flex items-center gap-2 px-4 py-1.5 bg-green-100 rounded-full hover:bg-green-200 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-lg hover:scale-125 duration-300"></i>
-                    <span class="text-sm font-medium text-gray-800">WhatsApp</span>
-                </a>
-            </div>
-
-            <a href="tel:+918534866350" class="flex items-center gap-2 px-4 py-1.5 bg-blue-100 rounded-full hover:bg-blue-200 transition">
-                <i class="fas fa-phone-alt text-blue-600 text-sm hover:scale-125 duration-300"></i>
-                <span class="text-sm font-medium text-gray-800">Call Me</span>
-            </a>
-
-            <a href="mailto:azp729012@gmail.com" class="text-xs text-blue-700 underline hover:text-blue-900 transition">Send Feedback</a>
-
-            <p class="text-sm text-gray-600 mt-2">
-                © <span id="year"></span> All Rights Reserved
-            </p>
+        <div class="flex flex-wrap justify-center gap-4 mt-2">
+          <a
+            href="https://instagram.com/himanshu_yadav479"
+            target="_blank"
+            class="flex items-center gap-2 px-4 py-1.5 bg-pink-100 rounded-full hover:bg-pink-200 transition"
+          >
+            <i
+              class="fab fa-instagram text-pink-600 text-lg hover:scale-125 duration-300"
+            ></i>
+            <span class="text-sm font-medium text-gray-800">Instagram</span>
+          </a>
+          <a
+            href="https://wa.me/918534866350"
+            target="_blank"
+            class="flex items-center gap-2 px-4 py-1.5 bg-green-100 rounded-full hover:bg-green-200 transition"
+          >
+            <i
+              class="fab fa-whatsapp text-green-600 text-lg hover:scale-125 duration-300"
+            ></i>
+            <span class="text-sm font-medium text-gray-800">WhatsApp</span>
+          </a>
         </div>
+
+        <a
+          href="tel:+918534866350"
+          class="flex items-center gap-2 px-4 py-1.5 bg-blue-100 rounded-full hover:bg-blue-200 transition"
+        >
+          <i
+            class="fas fa-phone-alt text-blue-600 text-sm hover:scale-125 duration-300"
+          ></i>
+          <span class="text-sm font-medium text-gray-800">Call Me</span>
+        </a>
+
+        <a
+          href="mailto:azp729012@gmail.com"
+          class="text-xs text-blue-700 underline hover:text-blue-900 transition"
+          >Send Feedback</a
+        >
+
+        <p class="text-sm text-gray-600 mt-2">
+          © <span id="year"></span> All Rights Reserved
+        </p>
+      </div>
     </footer>
-
-    <script>
-      
-    // Weather activities will be loaded from JSON
-    let weatherActivities = {};
-
-    // Lottie animations for different weather conditions with day/night variants
-    const weatherAnimations = {
-        sunny: {
-            day: "animation/sunny.json",
-            night: "animation/night.json"
-        },
-        rainy: {
-            day: "animation/rain.json",
-            night: "animation/rain.json"
-        },
-        cloudy: {
-            day: "",
-            night: "animation/night.json"
-        },
-        snowy: {
-            day: "animation/snow.json",
-            night: "animation/snow_night.json"
-        },
-        thunder: {
-            day: "animation/thunder.json",
-            night: "animation/night.json"
-        },
-        fog: {
-            day: "animation/fog.json",
-            night: "animation/fog.json"
-        },
-        default: {
-            day: "animation/default.json",
-            night: "animation/night.json"
-        }
-    };
-
-    let currentAnimation = null;
-    let resizeObserver = null;
-
-    // Function to check if it's day or night based on sunrise/sunset times
-    function isDayTime(currentTime, sunrise, sunset) {
-        // Convert times to comparable format (24-hour)
-        const timeToMinutes = (timeStr) => {
-            const [time, period] = timeStr.split(' ');
-            let [hours, minutes] = time.split(':').map(Number);
-            if (period === 'PM' && hours !== 12) hours += 12;
-            if (period === 'AM' && hours === 12) hours = 0;
-            return hours * 60 + minutes;
-        };
-
-        // Parse current time (format: "YYYY-MM-DD HH:MM")
-        const [datePart, timePart] = currentTime.split(' ');
-        const [currentHours, currentMinutes] = timePart.split(':').map(Number);
-        const currentTotal = currentHours * 60 + currentMinutes;
-
-        const sunriseTotal = timeToMinutes(sunrise);
-        const sunsetTotal = timeToMinutes(sunset);
-
-        return currentTotal >= sunriseTotal && currentTotal < sunsetTotal;
-    }
-
-    // Load activities from JSON file
-    fetch('weatherActivities.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to load activities');
-            }
-            return response.json();
-        })
-        .then(data => {
-            weatherActivities = data;
-            console.log("Weather activities loaded successfully");
-        })
-        .catch(error => {
-            console.error("Error loading activities:", error);
-            weatherActivities = {
-                default: {
-                    day: ["Check the weather for today's suggestions"],
-                    night: ["Check the weather for tonight's suggestions"]
-                }
-            };
-        });
-
-    // Utility function to get random activity
-    function getRandomActivity(condition, isDay) {
-        let type;
-        if (condition.includes("sun") || condition.includes("clear")) {
-            type = "sunny";
-        } else if (condition.includes("rain") || condition.includes("drizzle")) {
-            type = "rainy";
-        } else if (condition.includes("cloud")) {
-            type = "cloudy";
-        } else if (condition.includes("cold") || condition.includes("snow")) {
-            type = "cold";
-        } else {
-            type = "default";
-        }
-
-        // Use the passed isDay parameter
-        const timeOfDay = isDay ? "day" : "night";
-
-        // Safely get activities with fallbacks
-        const activities = weatherActivities[type]?.[timeOfDay] ||
-            weatherActivities.default?.[timeOfDay] ||
-            ["Enjoy your day!"];
-
-        // Remove any existing quotes from the activity message
-        const activity = activities[Math.floor(Math.random() * activities.length)];
-        return activity.replace(/[""]/g, '');
-    }
-
-    // Initialize audio system
-    let audioContext;
-    let audioElement;
-    let isMusicPlaying = false;
-    let currentTrack = "";
-    let audioInitialized = false;
-    let audioInteractionRegistered = false;
-
-    function initAudio() {
-        if (audioInitialized) return;
-
-        // Create audio element with better error handling
-        audioElement = new Audio();
-        audioElement.loop = true;
-        audioElement.preload = "auto";
-
-        // Handle audio errors
-        audioElement.addEventListener('error', () => {
-            console.error("Audio loading error:", audioElement.error);
-        });
-
-        // Setup audio context with better compatibility
-        try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const source = audioContext.createMediaElementSource(audioElement);
-            source.connect(audioContext.destination);
-        } catch (e) {
-            console.error("AudioContext failed:", e);
-            return;
-        }
-
-        // Handle audio autoplay policy with multiple interaction types
-        const handleUserInteraction = () => {
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    console.log("AudioContext resumed successfully");
-                    audioInteractionRegistered = true;
-                }).catch(e => {
-                    console.error("AudioContext resume failed:", e);
-                });
-            }
-        };
-
-        // Add multiple event listeners for better compatibility
-        const interactionEvents = ['click', 'touchstart', 'keydown', 'mousedown'];
-        interactionEvents.forEach(event => {
-            document.addEventListener(event, handleUserInteraction, { once: true });
-        });
-
-        audioInitialized = true;
-    }
-
-    // Play weather-appropriate music
-    function playWeatherMusic(condition) {
-        if (!audioInitialized) initAudio();
-
-        let musicFile;
-        let musicName;
-
-        // Music selection based on weather
-        if (condition.includes("sun") || condition.includes("clear")) {
-            musicFile = "sounds/sunny.mp3";
-            musicName = "☀️ Sunny Day Music";
-        } else if (condition.includes("rain") || condition.includes("drizzle")) {
-            musicFile = "sounds/rain.mp3";
-            musicName = "🌧️ Rainy Day Music";
-        } else if (condition.includes("cloud")) {
-            musicFile = "sounds/cloudy.mp3";
-            musicName = "☁️ Cloudy Day Music";
-        } else if (condition.includes("cold") || condition.includes("snow")) {
-            musicFile = "sounds/cold.mp3";
-            musicName = "❄️ Cold Day Music";
-        } else {
-            musicFile = "sounds/default.mp3";
-            musicName = "🌈 Weather Music";
-        }
-
-        // Only change if it's a new track
-        if (currentTrack !== musicFile) {
-            currentTrack = musicFile;
-            audioElement.src = musicFile;
-            document.getElementById("musicInfo").textContent = musicName;
-
-            const playAudioWithRetry = () => {
-                // Ensure audio context is ready
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume().then(() => {
-                        audioElement.play().then(() => {
-                            isMusicPlaying = true;
-                            updateMusicControls();
-                        }).catch(playError => {
-                            console.log("Playback failed, will retry:", playError);
-                            scheduleRetry();
-                        });
-                    }).catch(resumeError => {
-                        console.log("AudioContext resume failed:", resumeError);
-                        scheduleRetry();
-                    });
-                } else {
-                    audioElement.play().then(() => {
-                        isMusicPlaying = true;
-                        updateMusicControls();
-                    }).catch(playError => {
-                        console.log("Playback failed, will retry:", playError);
-                        scheduleRetry();
-                    });
-                }
-            };
-
-            const scheduleRetry = () => {
-                setTimeout(() => {
-                    if (!isMusicPlaying) {
-                        playAudioWithRetry();
-                    }
-                }, 500);
-            };
-
-            const updateMusicControls = () => {
-                document.getElementById("musicControl").innerHTML =
-                    isMusicPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-                document.getElementById("musicPlayer").style.display = "flex";
-            };
-
-            // Initial play attempt
-            playAudioWithRetry();
-        } else if (isMusicPlaying) {
-            // If same track and already playing, ensure controls are visible
-            document.getElementById("musicPlayer").style.display = "flex";
-        }
-    }
-
-    // Toggle music play/pause
-    function toggleMusic() {
-        if (!audioInitialized) initAudio();
-
-        const handlePlay = () => {
-            // First ensure audio context is running
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    audioElement.play().then(() => {
-                        isMusicPlaying = true;
-                        updateControls();
-                    }).catch(playError => {
-                        console.log("Play failed after resume:", playError);
-                        isMusicPlaying = false;
-                        updateControls();
-                    });
-                }).catch(resumeError => {
-                    console.log("Resume failed:", resumeError);
-                    isMusicPlaying = false;
-                    updateControls();
-                });
-            } else {
-                audioElement.play().then(() => {
-                    isMusicPlaying = true;
-                    updateControls();
-                }).catch(playError => {
-                    console.log("Direct play failed:", playError);
-                    isMusicPlaying = false;
-                    updateControls();
-                });
-            }
-        };
-
-        const updateControls = () => {
-            document.getElementById("musicControl").innerHTML =
-                isMusicPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-        };
-
-        if (isMusicPlaying) {
-            audioElement.pause();
-            isMusicPlaying = false;
-            updateControls();
-        } else {
-            handlePlay();
-        }
-    }
-
-    // Load Lottie animation based on weather condition and time of day
-    function loadWeatherAnimation(condition, isDay) {
-        // Destroy previous animation if exists
-        if (currentAnimation) {
-            currentAnimation.destroy();
-            currentAnimation = null;
-        }
-
-        // Clean up previous resize observer
-        if (resizeObserver) {
-            resizeObserver.disconnect();
-            resizeObserver = null;
-        }
-
-        // Determine animation type based on condition
-        let animationType = "default";
-        condition = condition.toLowerCase();
-        
-        if (condition.includes("sun") || condition.includes("clear")) {
-            animationType = "sunny";
-        } else if (condition.includes("rain") || condition.includes("drizzle")) {
-            animationType = "rainy";
-        } else if (condition.includes("cloud")) {
-            animationType = "cloudy";
-        } else if (condition.includes("snow") || condition.includes("ice")) {
-            animationType = "snowy";
-        } else if (condition.includes("thunder") || condition.includes("storm")) {
-            animationType = "thunder";
-        } else if (condition.includes("fog") || condition.includes("mist")) {
-            animationType = "fog";
-        }
-
-        // Get the appropriate animation path using isDay parameter
-        let animationPath;
-        if (typeof weatherAnimations[animationType] === 'object') {
-            // For animations that have day/night variants
-            animationPath = isDay ? weatherAnimations[animationType].day : weatherAnimations[animationType].night;
-        } else {
-            // For animations that are the same day and night
-            animationPath = weatherAnimations[animationType];
-        }
-
-        console.log(`Loading ${isDay ? 'day' : 'night'} animation for ${animationType}: ${animationPath}`);
-
-        // Get weather card container
-        const weatherCard = document.querySelector('.weather-card');
-        if (!weatherCard) return;
-
-        // Create container for animation if not exists
-        let container = document.getElementById("lottie-animation-container");
-        if (!container) {
-            container = document.createElement("div");
-            container.id = "lottie-animation-container";
-            container.className = "lottie-animation";
-            weatherCard.appendChild(container);
-        }
-
-        // Function to update animation size
-        const updateAnimationSize = () => {
-            container.style.width = weatherCard.offsetWidth + 'px';
-            container.style.height = weatherCard.offsetHeight + 'px';
-            if (currentAnimation) {
-                currentAnimation.resize();
-            }
-        };
-
-        // Set initial size
-        updateAnimationSize();
-
-        // Create resize observer to handle container size changes
-        resizeObserver = new ResizeObserver(updateAnimationSize);
-        resizeObserver.observe(weatherCard);
-
-        // Load new animation with responsive settings
-        currentAnimation = lottie.loadAnimation({
-            container: container,
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: animationPath,
-            rendererSettings: {
-                preserveAspectRatio: 'xMidYMid slice' // This will make animation cover the container
-            }
-        });
-    }
-
-    document.getElementById("year").textContent = new Date().getFullYear();
-    let searchHistory = JSON.parse(localStorage.getItem("weatherHistory")) || [];
-
-    async function getWeather(location = null) {
-        const btn = document.getElementById("checkBtn");
-        const input = document.getElementById("locationInput");
-
-        if (!location) location = input.value.trim();
-        if (!location) {
-            alert("Yaar kuch toh likho! Sheher ka naam batao na 😊");
-            return;
-        }
-
-        if (btn) {
-            btn.disabled = true;
-            btn.innerHTML =
-                '<i class="fas fa-spinner fa-spin mr-2"></i> checking...';
-        }
-
-        if (location && !searchHistory.includes(location)) {
-            searchHistory.unshift(location);
-            if (searchHistory.length > 5) searchHistory.pop();
-            localStorage.setItem("weatherHistory", JSON.stringify(searchHistory));
-            updateHistory();
-        }
-
-        try {
-            const res = await fetch(
-                `https://api.weatherapi.com/v1/forecast.json?key=e9c43fcf2e9c4868a3b71728252106&q=${location}&days=1&aqi=yes`
-            );
-            if (!res.ok) throw new Error("API error");
-            const data = await res.json();
-
-            const condition = data.current.condition.text.toLowerCase();
-            const emojiMap = {
-                sunny: "☀️",
-                clear: "☀️",
-                "partly cloudy": "⛅",
-                cloudy: "☁️",
-                overcast: "🌥️",
-                mist: "🌫️",
-                "patchy rain nearby": "🌦️",
-                "light rain": "🌧️",
-                "moderate rain": "🌧️",
-                "heavy rain": "⛈️",
-                thunderstorm: "🌩️",
-                snow: "❄️",
-                fog: "🌁",
-                drizzle: "🌧️",
-            };
-
-            const emoji = emojiMap[condition] || "🌈";
-            
-            // Get sunrise/sunset times from API
-            const currentTime = data.location.localtime;
-            const sunrise = data.forecast.forecastday[0].astro.sunrise;
-            const sunset = data.forecast.forecastday[0].astro.sunset;
-            
-            // Determine if it's day or night based on actual sunrise/sunset
-            const isDay = isDayTime(currentTime, sunrise, sunset);
-            
-            // Get theme based on condition and time
-            const theme = !isDay && (condition.includes("clear") || condition.includes("sun") || 
-                         condition.includes("cloud") || condition.includes("thunder")) 
-                         ? "theme-night" : getThemeFromCondition(condition);
-            
-            document.body.className = theme +
-                " min-h-screen flex flex-col items-center justify-center px-4 py-10 transition-all duration-500 font-sans";
-
-            const activity = getRandomActivity(condition, isDay);
-
-            // Create weather container
-            const weatherContainer = document.createElement('div');
-            weatherContainer.className = 'weather-card bg-white/30 backdrop-blur-md rounded-2xl p-6 shadow-xl w-full max-w-md animate-fadeIn text-gray-900 relative';
-            weatherContainer.innerHTML = `
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between">
-                        <div>
-                             <h2 class="text-2xl font-bold">🏙️ ${data.location.name}, ${data.location.region}</h2>
-                            <p class="text-sm text-black-700">🌏 ${data.location.country} | 🕰️ ${data.location.localtime}</p>
-                            <p class="text-sm text-white">🌅 Sunrise: ${sunrise} | 🌇 Sunset: ${sunset}</p>
-                        </div>
-                        <img src="${data.current.condition.icon}" alt="weather icon" class="w-16 h-16">
-                    </div>
-                    
-                    <div class="mt-4">
-                        <p class="text-xl font-semibold">${emoji} ${data.current.temp_c}°C - ${data.current.condition.text}</p>
-                        <p class="text-sm text-gray-800 mt-2">💨 Hawa: ${data.current.wind_kph} kph (${data.current.wind_dir})</p>
-                        <p class="text-sm text-gray-800">💧 Nami: ${data.current.humidity}% | 😅 Mehsoos: ${data.current.feelslike_c}°C</p>
-                        <p class="text-sm text-gray-800">☀️ UV: ${data.current.uv} | 🏭 AQI: ${data.current.air_quality?.pm2_5?.toFixed(1) || "NA"}</p>
-                    </div>
-                    
-                    <div class="himanshu-bubble animate-fadeIn">
-                        <p class="font-bold text-blue-800">Himanshu Advice 🗣️ :</p>
-                        <p class="text-gray-800">${activity}</p>
-                    </div>
-                    
-                    <canvas id="forecastChart" class="mt-4 w-full" height="120"></canvas>
-                    
-                    <div class="mt-4 text-sm text-gray-60">
-                        <p>📊 Pressure: ${data.current.pressure_mb} mb</p>
-                        <p>👀 Visibility: ${data.current.vis_km} km | ☁️ Badal: ${data.current.cloud}%</p>
-                    </div>
-                </div>
-            `;
-
-            // Add to DOM
-            document.getElementById("weatherInfo").innerHTML = '';
-            document.getElementById("weatherInfo").appendChild(weatherContainer);
-
-            // Load weather animation with proper day/night setting
-            loadWeatherAnimation(condition, isDay);
-
-            // Play weather-appropriate music
-            playWeatherMusic(condition);
-
-            // Hourly forecast chart
-            const labels = data.forecast.forecastday[0].hour.map(
-                (h) => h.time.split(" ")[1]
-            );
-            const temps = data.forecast.forecastday[0].hour.map((h) => h.temp_c);
-            const ctx = document.getElementById("forecastChart").getContext("2d");
-            new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: "hourly temperature..🌡️ (°C)",
-                            data: temps,
-                            borderColor: "#2563eb",
-                            backgroundColor: "#93c5fd",
-                            tension: 0.4,
-                            fill: true,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: false },
-                    },
-                },
-            });
-        } catch (err) {
-            document.getElementById("weatherInfo").innerHTML = `
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded animate-fadeIn" role="alert">
-                <p class="font-bold">Oops! Kuch toh gadbad hai</p>
-                <p>Yaar location sahi se likho na, nahi mil raha. Koi aur jagah try karo!</p>
-            </div>
-            `;
-        } finally {
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML =
-                    '<i class="fas fa-cloud-sun mr-2"></i> check weather...🌡️';
-            }
-        }
-    }
-
-    function getThemeFromCondition(condition) {
-        condition = condition.toLowerCase();
-        
-        if (condition.includes("rain") || condition.includes("drizzle")) {
-            return "theme-rainy";
-        } 
-        else if (condition.includes("sun") || condition.includes("clear")) {
-            return "theme-sunny";
-        }
-        else if (condition.includes("cloud")) {
-            return "theme-cloudy";
-        }
-        else if (condition.includes("snow") || condition.includes("ice")) {
-            return "theme-snowy";
-        }
-        else if (condition.includes("thunder") || condition.includes("storm")) {
-            return "theme-thunder";
-        }
-        else {
-            return "theme-default";
-        }
-    }
-
-    function updateHistory() {
-        const container = document.getElementById("history");
-        container.innerHTML = searchHistory
-            .map(
-                (loc) =>
-                    `<button onclick="getWeather('${loc}')" class="px-3 py-1 bg-white/40 text-sm rounded-full shadow hover:bg-white/60 transition">${loc}</button>`
-            )
-            .join(" ");
-    }
-
-    async function autoSuggest(query) {
-        const suggestionsBox = document.getElementById("suggestions");
-        if (!query || query.length < 2) {
-            suggestionsBox.classList.add("hidden");
-            return;
-        }
-
-        try {
-            const res = await fetch(
-                `https://api.weatherapi.com/v1/search.json?key=e9c43fcf2e9c4868a3b71728252106&q=${query}`
-            );
-            if (!res.ok) throw new Error("API error");
-            const data = await res.json();
-
-            if (data.length === 0) {
-                suggestionsBox.classList.add("hidden");
-                return;
-            }
-
-            suggestionsBox.innerHTML = data
-                .map(
-                    (loc) =>
-                        `<div onclick="selectCity('${loc.name}, ${loc.region}')">${loc.name}, ${loc.region} (${loc.country})</div>`
-                )
-                .join("");
-            suggestionsBox.classList.remove("hidden");
-        } catch (err) {
-            suggestionsBox.classList.add("hidden");
-        }
-    }
-
-    function selectCity(city) {
-        document.getElementById("locationInput").value = city.split(",")[0];
-        document.getElementById("suggestions").classList.add("hidden");
-        getWeather(city);
-    }
-
-    document.addEventListener("click", (e) => {
-        if (
-            !document.getElementById("locationInput").contains(e.target) &&
-            !document.getElementById("suggestions").contains(e.target)
-        ) {
-            document.getElementById("suggestions").classList.add("hidden");
-        }
-    });
-
-    function startVoice() {
-        // Pause music if playing
-        if (isMusicPlaying) {
-            toggleMusic();
-        }
-
-        const voiceBtn = document.getElementById("voiceBtn");
-        voiceBtn.innerHTML = '<i class="fas fa-microphone animate-pulse-ring"></i>';
-        voiceBtn.classList.add("animate-pulse-ring");
-        
-        const recognition = new (window.SpeechRecognition ||
-            window.webkitSpeechRecognition)();
-        recognition.lang = "en-IN";
-        recognition.start();
-        
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            document.getElementById("locationInput").value = transcript;
-            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            voiceBtn.classList.remove("animate-pulse-ring");
-            getWeather();
-        };
-        
-        recognition.onerror = (event) => {
-            console.error("Voice recognition error", event.error);
-            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            voiceBtn.classList.remove("animate-pulse-ring");
-            alert("Voice recognition failed. Please try again.");
-            
-            // Resume music if it was playing before
-            if (isMusicPlaying) {
-                toggleMusic();
-            }
-        };
-        
-        recognition.onend = () => {
-            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-            voiceBtn.classList.remove("animate-pulse-ring");
-            
-            // Resume music if no input was received
-            if (!document.getElementById("locationInput").value && isMusicPlaying) {
-                toggleMusic();
-            }
-        };
-    }
-
-    window.onload = () => {
-        updateHistory();
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                async (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
-                    await getWeather(`${lat},${lon}`);
-                },
-                () => {
-                    // Default to Delhi if location access denied
-                    getWeather("jaithra");
-                }
-            );
-        } else {
-            getWeather("jaithra");
-        }
-    };
-    </script>
-</body>
+  </body>
 </html>
