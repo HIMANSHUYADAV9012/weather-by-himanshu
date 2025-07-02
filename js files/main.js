@@ -31,9 +31,6 @@ async function getWeather(location = null) {
 
     displayWeatherData(combinedData, location);
     updateSearchHistory(location);
-    
-    // Update URL with location
-    window.history.pushState({}, '', `?location=${encodeURIComponent(location)}`);
   } catch (err) {
     console.error("Weather fetch error:", err);
     showErrorState();
@@ -80,6 +77,7 @@ async function fetchForecastData(location) {
   return await res.json();
 }
 
+// ✅ UPDATED displayWeatherData to split weather & hourly forecast
 function displayWeatherData(data, location) {
   const condition = data.current.condition.text.toLowerCase();
   const emoji = emojiMap[condition] || "🌈";
@@ -130,52 +128,42 @@ function displayWeatherData(data, location) {
   renderForecastChart(data.forecast.forecastday[0].hour);
 }
 
+// ❌ REMOVED hourly forecast block from here
 function generateWeatherHTML(data, condition, emoji, isDay, sunrise, sunset) {
   const activity = getRandomActivity(condition, isDay);
-  const shareText = `Check out the weather in ${data.location.name}: ${data.current.temp_c}°C and ${data.current.condition.text}`;
-  const shareUrl = window.location.href;
 
   return `
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold">🏙️ ${data.location.name}, ${data.location.region}</h2>
-                    <p class="text-sm text-gray-700">🌏 ${data.location.country} | 🕰️ ${data.location.localtime}</p>
+                    <h2 class="text-2xl font-bold">🏙️ ${data.location.name}, ${
+    data.location.region
+  }</h2>
+                    <p class="text-sm text-gray-700">🌏 ${
+                      data.location.country
+                    } | 🕰️ ${data.location.localtime}</p>
                     <p class="text-sm text-yellow-50">🌅 Sunrise: ${sunrise} | 🌇 Sunset: ${sunset}</p>
                 </div>
-                <img src="${data.current.condition.icon}" alt="weather icon" class="w-16 h-16">
+                <img src="${
+                  data.current.condition.icon
+                }" alt="weather icon" class="w-16 h-16">
             </div>
 
             <div class="mt-4">
-                <p class="text-xl font-semibold">${emoji} ${data.current.temp_c}°C - ${data.current.condition.text}</p>
-                <p class="text-sm text-gray-800 mt-2">💨 Hawa: ${data.current.wind_kph} kph (${data.current.wind_dir})</p>
-                <p class="text-sm text-gray-800">💧 Nami: ${data.current.humidity}% | 😅 Mehsoos: ${data.current.feelslike_c}°C</p>
-                <p class="text-sm text-gray-800">☀️ UV: ${data.current.uv} | 🏭 AQI: ${data.current.air_quality?.pm2_5?.toFixed(1) || "NA"}</p>
-            </div>
-
-            <!-- Share button with dropdown -->
-            <div class="share-container relative mt-4">
-                <button onclick="toggleShareOptions()" class="share-button bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm flex items-center justify-center w-full">
-                    <i class="fas fa-share-alt mr-2"></i> Share Weather
-                </button>
-                
-                <div id="shareOptions" class="share-options hidden absolute bottom-full left-0 mb-2 w-full bg-white rounded-lg shadow-lg p-2 z-20 border border-gray-200">
-                    <button onclick="shareOnTwitter('${shareText}', '${shareUrl}')" class="w-full text-left px-3 py-2 hover:bg-blue-50 rounded flex items-center">
-                        <i class="fab fa-twitter text-blue-400 mr-2"></i> Twitter
-                    </button>
-                    <button onclick="shareOnWhatsApp('${shareText}', '${shareUrl}')" class="w-full text-left px-3 py-2 hover:bg-green-50 rounded flex items-center">
-                        <i class="fab fa-whatsapp text-green-500 mr-2"></i> WhatsApp
-                    </button>
-                    <button onclick="shareOnFacebook('${shareUrl}')" class="w-full text-left px-3 py-2 hover:bg-blue-50 rounded flex items-center">
-                        <i class="fab fa-facebook text-blue-600 mr-2"></i> Facebook
-                    </button>
-                    <button onclick="downloadWeatherCard()" class="w-full text-left px-3 py-2 hover:bg-pink-50 rounded flex items-center">
-                        <i class="fab fa-instagram text-pink-500 mr-2"></i> Instagram
-                    </button>
-                    <button onclick="copyShareLink('${shareUrl}')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex items-center">
-                        <i class="fas fa-link text-gray-500 mr-2"></i> Copy Link
-                    </button>
-                </div>
+                <p class="text-xl font-semibold">${emoji} ${
+    data.current.temp_c
+  }°C - ${data.current.condition.text}</p>
+                <p class="text-sm text-gray-800 mt-2">💨 Hawa: ${
+                  data.current.wind_kph
+                } kph (${data.current.wind_dir})</p>
+                <p class="text-sm text-gray-800">💧 Nami: ${
+                  data.current.humidity
+                }% | 😅 Mehsoos: ${data.current.feelslike_c}°C</p>
+                <p class="text-sm text-gray-800">☀️ UV: ${
+                  data.current.uv
+                } | 🏭 AQI: ${
+    data.current.air_quality?.pm2_5?.toFixed(1) || "NA"
+  }</p>
             </div>
 
             <div class="himanshu-bubble animate-fadeIn">
@@ -187,58 +175,17 @@ function generateWeatherHTML(data, condition, emoji, isDay, sunrise, sunset) {
 
             <div class="mt-4 text-sm text-gray-600">
                 <p>📊 Pressure: ${data.current.pressure_mb} mb</p>
-                <p>👀 Visibility: ${data.current.vis_km} km | ☁️ Badal: ${data.current.cloud}%</p>
+                <p>👀 Visibility: ${data.current.vis_km} km | ☁️ Badal: ${
+    data.current.cloud
+  }%</p>
+  
+  <button id="shareBtn" class="mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-xl shadow-md hover:scale-105 transition-all duration-300 flex items-center gap-2">
+  <i class="fas fa-share-alt"></i> Share Weather 📤
+</button>
+
             </div>
         </div>
     `;
-}
-
-// Share functions
-function toggleShareOptions() {
-    const shareOptions = document.getElementById('shareOptions');
-    shareOptions.classList.toggle('hidden');
-    
-    // Close when clicking outside
-    document.addEventListener('click', function closeShareOptions(e) {
-        if (!e.target.closest('.share-container')) {
-            shareOptions.classList.add('hidden');
-            document.removeEventListener('click', closeShareOptions);
-        }
-    });
-}
-
-function shareOnTwitter(text, url) {
-  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-  window.open(twitterUrl, '_blank', 'width=550,height=420');
-}
-
-function shareOnWhatsApp(text, url) {
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`;
-  window.open(whatsappUrl, '_blank');
-}
-
-function shareOnFacebook(url) {
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-  window.open(facebookUrl, '_blank', 'width=550,height=400');
-}
-
-function copyShareLink(url) {
-  navigator.clipboard.writeText(url).then(() => {
-    alert('Link copied to clipboard!');
-  }).catch(err => {
-    console.error('Failed to copy: ', err);
-    alert('Failed to copy link. Please try again.');
-  });
-}
-
-function downloadWeatherCard() {
-  const weatherCard = document.querySelector('.weather-card');
-  html2canvas(weatherCard).then(canvas => {
-    const link = document.createElement('a');
-    link.download = `weather-${new Date().toISOString().slice(0,10)}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  });
 }
 
 function generateHourlyForecast(hourlyData) {
@@ -249,17 +196,30 @@ function generateHourlyForecast(hourlyData) {
     .slice(currentHour, currentHour + 24)
     .map((hour, index) => {
       const time = new Date(hour.time);
-      const hourString = time.getHours() + (time.getHours() >= 12 ? "PM" : "AM");
+      const hourString =
+        time.getHours() + (time.getHours() >= 12 ? "PM" : "AM");
       const isCurrentHour = index === 0;
 
       return `
-                <div class="hourly-item flex flex-col items-center px-3 py-2 ${isCurrentHour ? "bg-blue-50/30 rounded-lg" : ""}">
-                    <span class="text-xs font-medium">${index === 0 ? "Now" : hourString}</span>
-                    <img src="${hour.condition.icon}" alt="${hour.condition.text}" class="w-8 h-8 my-1">
+                <div class="hourly-item flex flex-col items-center px-3 py-2 ${
+                  isCurrentHour ? "bg-blue-50/30 rounded-lg" : ""
+                }">
+                    <span class="text-xs font-medium">${
+                      index === 0 ? "Now" : hourString
+                    }</span>
+                    <img src="${hour.condition.icon}" alt="${
+        hour.condition.text
+      }" class="w-8 h-8 my-1">
                     <span class="text-sm font-bold">${hour.temp_c}°</span>
                     <div class="rain-chance mt-1 flex flex-col items-center">
-                        <span class="text-xs ${hour.chance_of_rain > 0 ? "text-blue-600" : "text-gray-400"}">
-                            ${hour.chance_of_rain > 0 ? "☔" : ""} ${hour.chance_of_rain}%
+                        <span class="text-xs ${
+                          hour.chance_of_rain > 0
+                            ? "text-blue-600"
+                            : "text-gray-400"
+                        }">
+                            ${hour.chance_of_rain > 0 ? "☔" : ""} ${
+        hour.chance_of_rain
+      }%
                         </span>
                     </div>
                 </div>
@@ -306,7 +266,13 @@ function renderForecastChart(hourlyData) {
 }
 
 function getTheme(condition, isDay) {
-  if (!isDay && (condition.includes("clear") || condition.includes("sun") || condition.includes("cloud") || condition.includes("thunder"))) {
+  if (
+    !isDay &&
+    (condition.includes("clear") ||
+      condition.includes("sun") ||
+      condition.includes("cloud") ||
+      condition.includes("thunder"))
+  ) {
     return "theme-night";
   }
   return getThemeFromCondition(condition);
@@ -321,18 +287,91 @@ function updateSearchHistory(location) {
   updateHistory();
 }
 
+// ...rest of your code (autoSuggest, startVoice, etc.) remains unchanged
+
+// Optimized auto-suggest with debounce
+let debounceTimer;
+function autoSuggest(query) {
+  clearTimeout(debounceTimer);
+
+  const suggestionsBox = document.getElementById("suggestions");
+  if (!query || query.length < 2) {
+    suggestionsBox.classList.add("hidden");
+    return;
+  }
+
+  debounceTimer = setTimeout(async () => {
+    try {
+      const res = await fetch(
+        `https://api.weatherapi.com/v1/search.json?key=e9c43fcf2e9c4868a3b71728252106&q=${query}`
+      );
+      if (!res.ok) throw new Error("API error");
+      const data = await res.json();
+
+      suggestionsBox.innerHTML = data.length
+        ? data
+            .map(
+              (loc) =>
+                `<div onclick="selectCity('${loc.name}, ${loc.region}')">
+                        ${loc.name}, ${loc.region} (${loc.country})
+                    </div>`
+            )
+            .join("")
+        : '<div class="text-gray-500">No results found</div>';
+
+      suggestionsBox.classList.toggle("hidden", data.length === 0);
+    } catch (err) {
+      suggestionsBox.classList.add("hidden");
+    }
+  }, 300);
+}
+
+// Optimized voice recognition
+function startVoice() {
+  if (isMusicPlaying) toggleMusic();
+
+  const voiceBtn = document.getElementById("voiceBtn");
+  voiceBtn.innerHTML = '<i class="fas fa-microphone animate-pulse-ring"></i>';
+  voiceBtn.classList.add("animate-pulse-ring");
+
+  const recognition = new (window.SpeechRecognition ||
+    window.webkitSpeechRecognition)();
+  recognition.lang = "en-IN";
+  recognition.start();
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById("locationInput").value = transcript;
+    resetVoiceButton(voiceBtn);
+    getWeather();
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Voice recognition error", event.error);
+    resetVoiceButton(voiceBtn);
+    alert("Voice recognition failed. Please try again.");
+    if (isMusicPlaying) toggleMusic();
+  };
+
+  recognition.onend = () => {
+    resetVoiceButton(voiceBtn);
+    if (!document.getElementById("locationInput").value && isMusicPlaying) {
+      toggleMusic();
+    }
+  };
+}
+
+function resetVoiceButton(btn) {
+  btn.innerHTML = '<i class="fas fa-microphone"></i>';
+  btn.classList.remove("animate-pulse-ring");
+}
+
 // Initialize with loading state
 window.onload = () => {
   updateHistory();
   showInitialLoadingState();
 
-  // Check for location in URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const locationParam = urlParams.get('location');
-
-  if (locationParam) {
-    getWeather(locationParam);
-  } else if (navigator.geolocation) {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const lat = pos.coords.latitude;
@@ -360,7 +399,7 @@ function showInitialLoadingState() {
     `;
 }
 
-// Event listeners
+// Event listeners with optimized delegation
 document.addEventListener("click", (e) => {
   if (!e.target.closest("#locationInput, #suggestions")) {
     document.getElementById("suggestions").classList.add("hidden");
@@ -373,3 +412,43 @@ function selectCity(city) {
   document.getElementById("suggestions").classList.add("hidden");
   getWeather(city);
 }
+document.addEventListener("click", async function (e) {
+  if (e.target.closest("#shareBtn")) {
+    try {
+      const location = document.querySelector(".weather-card h2").textContent.trim();
+      const localtime = document.querySelector(".weather-card p:nth-child(3)").textContent.trim();
+      const temp = document.querySelector(".weather-card p.text-xl").textContent.trim();
+      const wind = document.querySelector(".weather-card p:nth-of-type(2)").textContent.trim();
+      const humidity = document.querySelector(".weather-card p:nth-of-type(3)").textContent.trim();
+      const uv = document.querySelector(".weather-card p:nth-of-type(4)").textContent.trim();
+      const sunData = document.querySelector(".weather-card p.text-yellow-50").textContent.trim();
+
+      const shareText = `
+🌤️ *Today's Weather Update* 🌤️
+
+📍 *Location:* ${location}
+🕰️ *Time:* ${localtime}
+🌡️ *Temperature:* ${temp}
+🌅 *${sunData}*
+💨 *${wind}*
+💧 *${humidity}*
+☀️ *${uv}*
+
+Check real-time weather on: 🌐 www.hawabaazi.com
+      `.trim();
+
+      if (navigator.share) {
+        await navigator.share({
+          title: "Weather Update - Hawabaazi",
+          text: shareText,
+          url: "https://www.hawabaazi.com",
+        });
+      } else {
+        alert("Sharing is not supported on this browser.");
+      }
+    } catch (err) {
+      console.error("Share failed:", err);
+      alert("Kuch gadbad ho gaya share karne mein 😓");
+    }
+  }
+});
