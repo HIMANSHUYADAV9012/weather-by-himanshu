@@ -1,3 +1,16 @@
+
+// At top or bottom of audio.js
+function updateMusicControls(isPlaying) {
+  const controlBtn = document.getElementById("musicControl");
+  if (!controlBtn) return;
+
+  controlBtn.innerHTML = isPlaying
+    ? '<i class="fas fa-pause"></i>'
+    : '<i class="fas fa-play"></i>';
+}
+
+
+
 let audioContext;
 let audioElement;
 let isMusicPlaying = false;
