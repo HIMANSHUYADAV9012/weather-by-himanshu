@@ -83,6 +83,18 @@
       }
     </script>
     <style>
+
+        @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+      .group-active .animate-ripple {
+        animation: ripple 600ms linear;
+      }
+
+      
       .hourly-forecast-container {
         background: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(10px);
