@@ -300,20 +300,6 @@
         animation: fadeIn 0.6s ease-in-out;
         transition: all 0.3s ease;
       }
-      #shareWeatherBtn {
-  transition: all 0.2s ease;
-}
-
-#shareWeatherBtn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-#shareWeatherBtn:active {
-  transform: translateY(0);
-}
-
-      
     </style>
 
     <script src="js files/config.js"></script>
@@ -321,6 +307,7 @@
     <script src="js files/weatherdisplay.js"></script>
     <script src="js files/audio.js"></script>
     <script src="js files/main.js"></script>
+    <script src="js files/share.js"></script>
   </head>
 
   <body
@@ -403,7 +390,7 @@
     <!-- Music Player (initially hidden) -->
     <div id="musicPlayer" style="display: none">
       <button id="musicControl" onclick="toggleMusic()">
-        <i class="fas fa-play"></i>
+        <i class="fas fa-play"></i>          
       </button>
       <span id="musicInfo">Weather Music</span>
     </div>
