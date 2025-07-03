@@ -178,13 +178,32 @@ function generateWeatherHTML(data, condition, emoji, isDay, sunrise, sunset) {
                 <p>👀 Visibility: ${data.current.vis_km} km | ☁️ Badal: ${
     data.current.cloud
   }%</p>
-  
-  <button id="shareBtn" class="mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-xl shadow-md hover:scale-105 transition-all duration-300 flex items-center gap-2">
-  <i class="fas fa-share-alt"></i> Share Weather 📤
-</button>
-
             </div>
         </div>
+
+<div class="mt-6 flex justify-center">
+  <button 
+    onclick="shareWeather(
+      '${data.location.name}',
+      '${data.location.localtime}',
+      '${sunrise}',
+      '${sunset}',
+      '${data.current.temp_c}',
+      '${data.current.condition.text}',
+      \`${activity.replace(/'/g, "\\'").replace(/`/g, "\\`")}\`,
+      '${data.location.country}'
+    )" 
+    class="group relative overflow-hidden w-full max-w-sm bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-6 rounded-xl shadow-lg hover:from-indigo-600 hover:to-blue-500 transition-all duration-500 ease-in-out"
+  >
+    <span class="absolute left-0 top-0 h-full w-full transform scale-x-0 group-hover:scale-x-100 origin-left bg-white opacity-10 transition-transform duration-500 ease-out"></span>
+    <span class="relative z-10 flex items-center justify-center gap-2 text-lg font-semibold">
+      <i class="fas fa-share-alt animate-pulse"></i>
+      Share Weather⛅🌡️
+    </span>
+  </button>
+</div>
+
+
     `;
 }
 
@@ -412,43 +431,3 @@ function selectCity(city) {
   document.getElementById("suggestions").classList.add("hidden");
   getWeather(city);
 }
-document.addEventListener("click", async function (e) {
-  if (e.target.closest("#shareBtn")) {
-    try {
-      const location = document.querySelector(".weather-card h2").textContent.trim();
-      const localtime = document.querySelector(".weather-card p:nth-child(3)").textContent.trim();
-      const temp = document.querySelector(".weather-card p.text-xl").textContent.trim();
-      const wind = document.querySelector(".weather-card p:nth-of-type(2)").textContent.trim();
-      const humidity = document.querySelector(".weather-card p:nth-of-type(3)").textContent.trim();
-      const uv = document.querySelector(".weather-card p:nth-of-type(4)").textContent.trim();
-      const sunData = document.querySelector(".weather-card p.text-yellow-50").textContent.trim();
-
-      const shareText = `
-🌤️ *Today's Weather Update* 🌤️
-
-📍 *Location:* ${location}
-🕰️ *Time:* ${localtime}
-🌡️ *Temperature:* ${temp}
-🌅 *${sunData}*
-💨 *${wind}*
-💧 *${humidity}*
-☀️ *${uv}*
-
-Check real-time weather on: 🌐 www.hawabaazi.com
-      `.trim();
-
-      if (navigator.share) {
-        await navigator.share({
-          title: "Weather Update - Hawabaazi",
-          text: shareText,
-          url: "https://www.hawabaazi.com",
-        });
-      } else {
-        alert("Sharing is not supported on this browser.");
-      }
-    } catch (err) {
-      console.error("Share failed:", err);
-      alert("Kuch gadbad ho gaya share karne mein 😓");
-    }
-  }
-});
