@@ -110,45 +110,64 @@ function displayWeatherData(data, location) {
   weatherContainer.innerHTML = weatherHTML;
   mainContainer.appendChild(weatherContainer);
 
-  // 📅 Dropdown + Hourly Forecast
+  // Hourly Forecast Cards Instead of Dropdown
   const hourlyContainer = document.createElement("div");
   hourlyContainer.className =
     "hourly-forecast-container mt-6 w-full max-w-3xl animate-fadeIn";
+
+  // Day Tabs
+  const dayTabs = data.forecast.forecastday
+    .map((day, i) => {
+      const dateObj = new Date(day.date);
+      const dateLabel = dateObj.toLocaleDateString("en-IN", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      });
+
+      return `
+        <button 
+          class="day-tab px-3 py-2 rounded-xl text-sm bg-white/20 hover:bg-white/40 backdrop-blur text-gray-900 transition-all" 
+          data-day-index="${i}"
+        >
+          ${dateLabel}
+        </button>`;
+    })
+    .join("");
+
+  // Initial Hourly Forecast
+  const hourlyHTML = generateHourlyForecast(
+    data.forecast.forecastday[0].hour,
+    0,
+    currentTime
+  );
+
   hourlyContainer.innerHTML = `
-      <div class="flex items-center gap-2 mb-2">
-         <h3 class="text-lg font-semibold">Hourly Forecast</h3>
-         <select id="daySelector" class="ml-auto px-2 py-1 rounded bg-white shadow text-sm">
-            ${data.forecast.forecastday
-              .map((day, i) => {
-                const options = {
-                  weekday: "short",
-                  day: "numeric",
-                  month: "short",
-                };
-                const dateObj = new Date(day.date);
-                const dateLabel = dateObj.toLocaleDateString("en-IN", options); // e.g., "Thu, 3 Jul"
-                return `<option value="${i}">${dateLabel}</option>`;
-              })
-              .join("")}
-         </select>
-      </div>
-      <div id="hourlyScroll" class="hourly-scroll-container flex overflow-x-auto pb-4 scrollbar-hide">
-         ${generateHourlyForecast(data.forecast.forecastday[0].hour)}
-      </div>
-   `;
+    <div class="mb-3 flex gap-2 overflow-x-auto">${dayTabs}</div>
+    <div id="hourlyScroll" class="hourly-scroll-container flex overflow-x-auto pb-4 scrollbar-hide">
+      ${hourlyHTML}
+    </div>
+  `;
+
   mainContainer.appendChild(hourlyContainer);
 
-  // 🔁 Change forecast on day change
-  document.getElementById("daySelector").addEventListener("change", (e) => {
-    const selectedDay = parseInt(e.target.value);
-    const hourlyHTML = generateHourlyForecast(
-      data.forecast.forecastday[selectedDay].hour
-    );
-    document.getElementById("hourlyScroll").innerHTML = hourlyHTML;
-    renderForecastChart(data.forecast.forecastday[selectedDay].hour);
-  });
+  // Event Listener for Each Tab
+  setTimeout(() => {
+    document.querySelectorAll(".day-tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const selectedDay = parseInt(btn.getAttribute("data-day-index"));
+        const hourlyHTML = generateHourlyForecast(
+          data.forecast.forecastday[selectedDay].hour,
+          selectedDay,
+          currentTime
+        );
+        document.getElementById("hourlyScroll").innerHTML = hourlyHTML;
+        renderForecastChart(data.forecast.forecastday[selectedDay].hour);
+      });
+    });
+  }, 100);
 
-  // Initial chart & animation
+  // Animations & Chart
   loadWeatherAnimation(condition, isDay);
   playWeatherMusic(condition);
   renderForecastChart(data.forecast.forecastday[0].hour);
@@ -238,12 +257,18 @@ function generateWeatherHTML(data, condition, emoji, isDay, sunrise, sunset) {
     `;
 }
 
-function generateHourlyForecast(hourlyData, isToday = false) {
-  const now = new Date();
+function generateHourlyForecast(hourlyData, dayIndex = 0, currentTime) {
+  const now = new Date(currentTime);
   const currentHour = now.getHours();
 
-  // Slice only if it's today
-  const dataToShow = isToday ? hourlyData.slice(currentHour) : hourlyData;
+  // अगर आज का दिन है (index 0), तो current hour से आगे के data दिखाओ
+  const dataToShow =
+    dayIndex === 0
+      ? hourlyData.filter((hour) => {
+          const hourVal = new Date(hour.time).getHours();
+          return hourVal >= currentHour;
+        })
+      : hourlyData;
 
   return dataToShow
     .map((hour, index) => {
@@ -258,30 +283,26 @@ function generateHourlyForecast(hourlyData, isToday = false) {
           ? `${hourVal - 12}PM`
           : `${hourVal}AM`;
 
-      const isCurrentHour = isToday && index === 0;
+      const isNow = dayIndex === 0 && index === 0;
 
       return `
-            <div class="hourly-item flex flex-col items-center px-3 py-2 ${
-              isCurrentHour ? "bg-blue-50/30 rounded-lg" : ""
-            }">
-               <span class="text-xs font-medium">${
-                 isToday && index === 0 ? "Now" : hourString
-               }</span>
-               <img src="${hour.condition.icon}" alt="${
+        <div class="hourly-item flex flex-col items-center px-3 py-2 ${
+          isNow ? "bg-blue-50/30 rounded-lg" : ""
+        }">
+          <span class="text-xs font-medium">${isNow ? "Now" : hourString}</span>
+          <img src="${hour.condition.icon}" alt="${
         hour.condition.text
       }" class="w-8 h-8 my-1">
-               <span class="text-sm font-bold">${hour.temp_c}°</span>
-               <div class="rain-chance mt-1 flex flex-col items-center">
-                  <span class="text-xs ${
-                    hour.chance_of_rain > 0 ? "text-blue-600" : "text-gray-400"
-                  }">
-                     ${hour.chance_of_rain > 0 ? "☔" : ""} ${
-        hour.chance_of_rain
-      }%
-                  </span>
-               </div>
-            </div>
-         `;
+          <span class="text-sm font-bold">${hour.temp_c}°</span>
+          <div class="rain-chance mt-1 flex flex-col items-center">
+            <span class="text-xs ${
+              hour.chance_of_rain > 0 ? "text-blue-600" : "text-gray-400"
+            }">
+              ${hour.chance_of_rain > 0 ? "☔" : ""} ${hour.chance_of_rain}%
+            </span>
+          </div>
+        </div>
+      `;
     })
     .join("");
 }
