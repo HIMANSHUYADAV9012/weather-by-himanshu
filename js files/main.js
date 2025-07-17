@@ -257,11 +257,16 @@ function generateWeatherHTML(data, condition, emoji, isDay, sunrise, sunset) {
     `;
 }
 
-function generateHourlyForecast(hourlyData, dayIndex = 0, currentTime) {
+function generateHourlyForecast(
+  hourlyData,
+  dayIndex = 0,
+  currentTime,
+  selectedDayIndex
+) {
   const now = new Date(currentTime);
   const currentHour = now.getHours();
 
-  // अगर आज का दिन है (index 0), तो current hour से आगे के data दिखाओ
+  // Filter data based on current time if it's today
   const dataToShow =
     dayIndex === 0
       ? hourlyData.filter((hour) => {
@@ -270,41 +275,105 @@ function generateHourlyForecast(hourlyData, dayIndex = 0, currentTime) {
         })
       : hourlyData;
 
-  return dataToShow
-    .map((hour, index) => {
-      const time = new Date(hour.time);
-      const hourVal = time.getHours();
-      const hourString =
-        hourVal === 0
-          ? "12AM"
-          : hourVal === 12
-          ? "12PM"
-          : hourVal > 12
-          ? `${hourVal - 12}PM`
-          : `${hourVal}AM`;
+  const isSelected = dayIndex === selectedDayIndex;
+  const selectionIndicator = isSelected
+    ? `before:content-[''] before:absolute before:-top-1 before:left-1/2 before:-translate-x-1/2 before:w-2 before:h-2 before:bg-blue-500 before:rounded-full`
+    : "";
 
-      const isNow = dayIndex === 0 && index === 0;
+  const shortLabel =
+    dayIndex === 0
+      ? "Today"
+      : dayIndex === 1
+      ? "Tomorrow"
+      : new Date(hourlyData[0].time).toLocaleDateString("en-US", {
+          weekday: "short",
+        });
 
-      return `
-        <div class="hourly-item flex flex-col items-center px-3 py-2 ${
-          isNow ? "bg-blue-50/30 rounded-lg" : ""
-        }">
-          <span class="text-xs font-medium">${isNow ? "Now" : hourString}</span>
-          <img src="${hour.condition.icon}" alt="${
-        hour.condition.text
-      }" class="w-8 h-8 my-1">
-          <span class="text-sm font-bold">${hour.temp_c}°</span>
-          <div class="rain-chance mt-1 flex flex-col items-center">
-            <span class="text-xs ${
-              hour.chance_of_rain > 0 ? "text-blue-600" : "text-gray-400"
-            }">
-              ${hour.chance_of_rain > 0 ? "☔" : ""} ${hour.chance_of_rain}%
-            </span>
-          </div>
+  return `
+    <div class="relative mb-6">
+      <div class="hourly-header mb-3 flex justify-between items-center px-2">
+        <h3 class="text-sm font-semibold text-gray-700">
+          ${shortLabel}
+        </h3>
+
+        <button class="day-selector relative flex items-center gap-1
+          ${
+            isSelected
+              ? "bg-gradient-to-r from-blue-100 via-white to-blue-100 border border-blue-300 text-blue-800 font-semibold shadow-md scale-[1.03]"
+              : "bg-white border border-gray-200 text-gray-600 hover:border-blue-200 hover:text-blue-700"
+          }
+          text-xs px-3 py-1 rounded-full transition-all duration-300 ease-in-out"
+          data-day-index="${dayIndex}">
+          ${isSelected ? `<span class="text-blue-600 text-sm">📅</span>` : ""}
+          ${shortLabel}
+        </button>
+      </div>
+
+      <div class="hourly-container relative ${selectionIndicator}">
+        <div class="flex overflow-x-auto pb-4 scrollbar-hide space-x-1 px-2">
+          ${dataToShow
+            .map((hour, index) => {
+              const time = new Date(hour.time);
+              const hourVal = time.getHours();
+              const hourString =
+                hourVal === 0
+                  ? "12AM"
+                  : hourVal === 12
+                  ? "12PM"
+                  : hourVal > 12
+                  ? `${hourVal - 12}PM`
+                  : `${hourVal}AM`;
+
+              const isNow = dayIndex === 0 && index === 0;
+              const isDayTime = hour.is_day === 1;
+              const highlightClass = isNow
+                ? "bg-gradient-to-b from-blue-100/40 to-blue-50/20 shadow-sm"
+                : "";
+              const timeClass = isNow
+                ? "font-bold text-blue-700"
+                : "text-gray-700";
+              const tempClass = isNow
+                ? "text-blue-800"
+                : isDayTime
+                ? "text-gray-900"
+                : "text-gray-800";
+              const borderClass = isNow
+                ? "border border-blue-200"
+                : "border border-transparent";
+
+              return `
+                <div class="hourly-item flex flex-col items-center px-3 py-3 rounded-xl transition-all duration-300 ease-in-out hover:scale-105 hover:bg-white/30 ${highlightClass} ${borderClass} min-w-[60px]">
+                  <span class="text-xs ${timeClass} transition-colors duration-200">${
+                isNow ? "Now" : hourString
+              }</span>
+                  <img src="${hour.condition.icon}" alt="${
+                hour.condition.text
+              }" class="w-9 h-9 my-1 transition-transform duration-300 hover:scale-110">
+                  <span class="text-sm font-semibold ${tempClass}">${
+                hour.temp_c
+              }°</span>
+                  <div class="rain-chance mt-1 flex flex-col items-center">
+                    <span class="text-xs ${
+                      hour.chance_of_rain > 0
+                        ? "text-blue-600 font-medium"
+                        : "text-gray-500"
+                    } transition-colors duration-200">
+                      ${
+                        hour.chance_of_rain > 0
+                          ? `<span class="inline-block animate-bounce">☔</span>`
+                          : `<span class="opacity-70">💧</span>`
+                      } 
+                      ${hour.chance_of_rain}%
+                    </span>
+                  </div>
+                </div>
+              `;
+            })
+            .join("")}
         </div>
-      `;
-    })
-    .join("");
+      </div>
+    </div>
+  `;
 }
 
 function showErrorState() {
